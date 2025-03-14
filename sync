@@ -16,13 +16,10 @@ done
 SECONDS=0
 
 if [[ $git_cookies != 0 ]]; then
-
 sudo touch /etc/mtab
 sudo chmod 777 /etc/mtab
-
 echo "$git_cookies" > ~/git_cookies.sh
 bash ~/git_cookies.sh
-
 fi
 
 git config --global user.name "ImSpiDy"
@@ -31,24 +28,27 @@ gh config set -h github.com
 login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
+#exit 0
+
 # Sync source
 repo init --depth=1 --no-repo-verify -u https://github.com/VoltageOS/manifest.git -b 13 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
-#exit 0
 
 # tree
 
 if [ $K19 == 1 ]; then
 git clone --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 && git -C kernel/xiaomi/sdm660 revert --no-edit 4cbc441be5366fdc5e7cc09c989df617c9c162d0
+#test hevc-10bit fix
+curl https://github.com/Atom-X-Devs/scarlet_xiaomi_sdm660/commit/572d01152a3ad83fc401c1af19adbdf39fe8a7e1.patch | git -C kernel/xiaomi/sdm660 am
 else
-git clone --depth=1 https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-qti
+git clone --depth=1 https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-rdp
 fi
 
-git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 13
-git -C device/xiaomi/lavender revert --no-edit c4be758e22889a9f79152cb65869cce9617a4036
-git -C device/xiaomi/lavender revert --no-edit e99ab4426a679cfd117c6eeb7ec36769b18ae71e
+git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 13
+#git -C device/xiaomi/lavender revert --no-edit c4be758e22889a9f79152cb65869cce9617a4036
+#git -C device/xiaomi/lavender revert --no-edit e99ab4426a679cfd117c6eeb7ec36769b18ae71e
 
 git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 13
 
@@ -59,41 +59,48 @@ git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm
 rm -rf hardware/xiaomi
 git clone --depth=1 https://github.com/arrowos-devices/android_hardware_xiaomi hardware/xiaomi -b arrow-13.1
 
-#rm -rf device/qcom/sepolicy-legacy-um
-#git clone --depth=1 https://github.com/ArrowOS/android_device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um -b arrow-13.1
-
 #rm -rf device/xiaomi/lavender/libhidl
 rm -rf hardware/xiaomi/megvii/*.bp
 
 # patch
-rm -rf /tmp/rom/bionic
-git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
+# bionic
+rm -rf /tmp/rom/bionic && git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
+curl https://github.com/wHo-EM-i/bionic/commit/585562aa03169194a2b0c32e72c752ff07a2c71d.patch | git -C bionic am
+
 # soong patch
 curl https://github.com/wHo-EM-i/build_soong/commit/1f4a7bed507a34ca6e46a5ab5b4017899133cab0.patch | git -C build/soong am
+
 # build_make
 curl https://github.com/VoltageOS/build/commit/765c1bfe16e78fe8aec256e507d4dc1445187f5e.patch | git -C build/make am
+
+# frameworks_native
+curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/dabdcc7ed7cb126f61f8f48602be62d7944b6eee.patch | git -C frameworks/native am
+curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/ee95d097a8686e37b14e80237b7299a3cca67a20.patch | git -C frameworks/native am
+
+# vendor_voltage
+curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/09d98ff84e42287ab56fcd621aa1cf3d9933c2fe.patch | git -C vendor/voltage am
+#curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/80f9ec6fe8f1315597e5045bea5a9e8d919f3095.patch | git -C vendor/voltage am
+#curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/f6c03239496818df327613f203f1cec9fa04c9db.patch | git -C vendor/voltage am
 
 # clang 17
 #git clone --depth=1 https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r498229 prebuilts/clang/host/linux-x86/aosp-clang
 
 # Hals
-if [ $K19 == 1 ]; then
-sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
-else
-sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' vendor/*/config/B*Qcom.mk
-fi
+#if [ $K19 == 1 ]; then
+#sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
+#else
+#sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' vendor/*/config/B*Qcom.mk
+#fi
 rm -rf hardware/qcom-caf/sdm660/audio hardware/qcom-caf/sdm660/media
 rm -rf hardware/qcom-caf/sdm660/display
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 13-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 15-9.2.r1
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 13-caf-sdm660
+#mine
+git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 15-caf-sdm660
+#pix106
+#git clone --depth=1 https://github.com/pix106/android_hardware_qcom-caf_display hardware/qcom-caf/sdm660/display -b lineage-22.1-caf-sdm660
 
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b sdm660-4.19-11.2.1.r1
-#git clone --depth=1 https://github.com/pix106/android_hardware_qcom-caf_camera hardware/qcom-caf/sdm660/camera -b sdm660-4.19-11.2.1.r1-lavender
-
-# webview issue due to file lfs file format
-#rm -rf /tmp/rom/external/chromium-webview/prebuilt/arm64/
-#git clone --depth=1 https://gitlab.com/dib12/webview /tmp/rom/external/chromium-webview/prebuilt/arm64 -b 116.0.5845.92
 
 # keys
 #git clone --depth=1 https://github.com/Los-Ext/vendor_lineage-priv_keys vendor/lineage-priv/keys

@@ -6,7 +6,7 @@ build_gapps=0
 
 # export variable here
 export TZ=Asia/Kolkata
-export SELINUX_IGNORE_NEVERALLOWS=true
+#export SELINUX_IGNORE_NEVERALLOWS=true
 export RELAX_USES_LIBRARY_CHECK=true
 if [ $K19 == 1 ]; then
 export TARGET_KERNEL_VERSION=4.19
@@ -24,6 +24,7 @@ get_system () {
 [ ! -e out/target/product/lavender/system.img ] && make systemimage -j16
 [ ! -e out/target/product/lavender/system.img ] && tg "System.img buid failed!" && exit 0
 tg "System.img Build Succeed!"
+echo "- Zipping system"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_system.zip out/target/product/lavender/system.img
 upload *_system.zip
 }
@@ -32,6 +33,7 @@ get_product () {
 [ ! -e out/target/product/lavender/product.img ] && make productimage -j16
 [ ! -e out/target/product/lavender/product.img ] && tg "Product.img buid failed!" && exit 0
 tg "Product.img Build Succeed!"
+echo "- Zipping product"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_product.zip out/target/product/lavender/product.img
 upload *_product.zip
 }
@@ -40,6 +42,7 @@ get_system_ext () {
 [ ! -e out/target/product/lavender/system_ext.img ] && make systemextimage -j16
 [ ! -e out/target/product/lavender/system_ext.img ] && tg "System_ext.img buid failed!" && exit 0
 tg "System_ext.img Build Succeed!"
+echo "- Zipping system_ext"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_system_ext.zip out/target/product/lavender/system_ext.img
 upload *_system_ext.zip
 }
@@ -48,6 +51,7 @@ get_vendor () {
 [ ! -e out/target/product/lavender/vendor.img ] && make vendorimage -j16
 [ ! -e out/target/product/lavender/vendor.img ] && tg "Vendor.img buid failed!" && exit 0
 tg "Vendor.img Build Succeed!"
+echo "- Zipping vendor"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_vendor.zip out/target/product/lavender/vendor.img
 upload *_vendor.zip
 }
@@ -56,6 +60,7 @@ get_odm () {
 [ ! -e out/target/product/lavender/odm.img ] && make odmimage -j16
 [ ! -e out/target/product/lavender/odm.img ] && tg "odm.img buid failed!" && exit 0
 tg "odm.img Build Succeed!"
+echo "- Zipping odm"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_odm.zip out/target/product/lavender/odm.img
 upload *_odm.zip
 }
@@ -64,6 +69,7 @@ get_boot () {
 [ ! -e out/target/product/lavender/boot.img ] && make bootimage -j16
 [ ! -e out/target/product/lavender/boot.img ] && tg "Boot.img buid failed!" && exit 0
 tg "Boot.img Build Succeed!"
+echo "- Zipping boot"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_boot.zip out/target/product/lavender/boot.img
 upload *_boot.zip
 }
@@ -121,19 +127,32 @@ prepare_images
 convert_dat
 convert_br
 tg "- Zipping OTA Package"
-zip -r1v ${rom_name}-${branch_name}-Community-lavender-$(date +"%F-%H%S").zip *
-upload *.zip && exit 0
+zip -r1v ${rom_name}-${branch_name}-Community-lavender-$(date +"%Y%m%d-%H%S").zip *
+mkdir -p /tmp/rom/out/target/product/lavender
+mv *.zip /tmp/rom/out/target/product/lavender
+cd /tmp/rom && ls /tmp/rom/out/target/product/lavender/*.zip
+}
+
+split_build () {
+case "$build_type" in
+		 c|C|s|S)
+		 # part 1
+		 #get_product
+		 #get_system_ext
+		 get_system
+		 ;;
+		 *)
+		 # part 2
+		 get_vendor
+		 # fking ksu errors
+		 ls out/target/product/lavender/vendor.img || get_vendor
+		 #get_odm
+		 #get_boot
+esac
 }
 
 compile_plox () {
-# part 1
-#get_system
-#get_product
-#get_system_ext
-get_vendor
-get_odm
-get_boot
-# part2 (choose manual zip or bacon if its not in parts)
+split_build
 final_zip
 #m bacon -j8
 }
