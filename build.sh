@@ -1,5 +1,14 @@
 # Normal build steps
+
 . build/envsetup.sh
+# RBE
+. /tmp/ci/rbe
+#export OUT_DIR=out
+#export RBE_OUT_DIR=out
+export RBE_CXX_LINKS_EXEC_STRATEGY=local
+export RBE_METALAVA_EXEC_STRATEGY=local
+export RBE_LOG_LEVEL=debug
+env | grep RBE
 lunch voltage_lavender-userdebug
 
 build_gapps=0
@@ -137,8 +146,8 @@ split_build () {
 case "$build_type" in
 		 c|C|s|S)
 		 # part 1
-		 #get_product
-		 #get_system_ext
+		 get_product
+		 get_system_ext
 		 get_system
 		 ;;
 		 *)
@@ -146,13 +155,21 @@ case "$build_type" in
 		 get_vendor
 		 # fking ksu errors
 		 ls out/target/product/lavender/vendor.img || get_vendor
-		 #get_odm
-		 #get_boot
+		 get_odm
+		 get_boot
 esac
 }
 
 compile_plox () {
-split_build
-final_zip
-#m bacon -j8
+#split_build
+#final_zip
+m productimage
+m systemextimage
+m systemimage
+m bacon #-j16
+
+# KSU bc -_-
+if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ] && [ $(cat /tmp/rom/out/error.log | grep -o -e 'KernelSU' -e 'FAILED: ' | head -n 1) ]; then
+m bacon #-j16
+fi
 }

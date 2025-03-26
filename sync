@@ -69,6 +69,8 @@ curl https://github.com/wHo-EM-i/bionic/commit/585562aa03169194a2b0c32e72c752ff0
 
 # soong patch
 curl https://github.com/wHo-EM-i/build_soong/commit/1f4a7bed507a34ca6e46a5ab5b4017899133cab0.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/d6ed01c1ff57ca44c43698edd81930e4cd86eb49.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/1b65ad830978e9e41b5bc38d82d4b306c36475dc.patch | git -C build/soong am
 
 # build_make
 curl https://github.com/VoltageOS/build/commit/765c1bfe16e78fe8aec256e507d4dc1445187f5e.patch | git -C build/make am
