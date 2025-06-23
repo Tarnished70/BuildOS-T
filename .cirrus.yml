@@ -5,30 +5,40 @@ env:
     # Config
     CONFIG: config.sh
 
-    # Telegram
-    TG_CHAT_ID: ENCRYPTED[0003e1cf5276424a5b2afb8c6a39f2d830864e8555b37220bd3bf173f3ef5b8769ab98425d96a76adf64b18241c940dd]
-    TG_TOKEN: ENCRYPTED[03de4105db5d23ec42490965c0a0f79217c1e3366cb152bd9d9a045e22586eba675615e1f08bf1aea3e860d499efde60]
-
     # Cirrus Specific Vars (Do *NOT* Change)
     CIRRUS_SHELL: bash
 
+    # Depth clone
+    CIRRUS_CLONE_DEPTH: 1 # No need to clone with the whole history
+
+# store our secrets here
+    my_og_token: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
+
+    bot_api: "ENCRYPTED[e09e9a0cc5e18746d2e09f1e0e3d23c5093407c11489831f87d4fea889b3e5e6b44d95bd27bc85a3caecd26c50080a54]"
+    TG_TOKEN: "$bot_api"
+
+    chat_id: "-1001510035003"
+    TG_CHAT_ID: "$chat_id"
+
+    USE_RBE: false
+
 task:
-  name: "Recovery Build"
+  name: "R"
   timeout_in: 120m
   container:
-      image: ghcr.io/sushrut1101/docker:arch
+      image: nexgang/ubuntu:latest
       cpu: 8
-      memory: 20G
+      memory: 32G
+      greedy: true
 
   Checks_script:
-      - bash -c "$(curl -sL https://raw.githubusercontent.com/OrangeFoxRecovery/OrangeFox-CI/fox/scripts/checks.sh)"
+      - bash scripts/che*
 
   Sync_script:
-      - bash -c "$(curl -sL https://raw.githubusercontent.com/OrangeFoxRecovery/OrangeFox-CI/fox/scripts/sync.sh)"
+      - bash scripts/sy*
 
   Build_script:
-      - bash -c "$(curl -sL https://raw.githubusercontent.com/OrangeFoxRecovery/OrangeFox-CI/fox/scripts/build.sh)"
+      - bash scripts/bu*
 
   Upload_script:
-      - export TIMEOUT=43200 # Link timeout (in minutes)
-      - bash -c "$(curl -sL https://raw.githubusercontent.com/OrangeFoxRecovery/OrangeFox-CI/fox/scripts/upload.sh)"
+      - bash scripts/upl*

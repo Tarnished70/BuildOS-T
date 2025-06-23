@@ -53,6 +53,20 @@ echo " "
 # Prepare the Build Environment
 source build/envsetup.sh
 
+# gh login
+login_main
+
+if [ "$USE_RBE" = "true" ]; then
+# RBE
+wget https://github.com/xyz-sundram/Releases/releases/download/client-linux-amd64/client-linux-amd64.zip
+unzip -d $HOME/rbe *.zip
+curl -s https://$(gh auth token)@raw.githubusercontent.com/projects-nexus/ci-script/refs/heads/test/rbe -o $HOME/rbe/rbe.sh
+
+# Run RBE
+. $HOME/rbe/rbe.sh
+export RBE_DIR="$HOME/rbe"
+fi
+
 # Run the Extra Command
 $EXTRA_CMD
 
