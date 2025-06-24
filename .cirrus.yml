@@ -1,10 +1,31 @@
-task:
-  name: "Recovery Build"
-  timeout_in: 120m
-  container:
-      image: ghcr.io/sushrut1101/docker:arch
-      cpu: 8
-      memory: 20G
+env: # Environment variables to pass to all tasks
+    CIRRUS_CLONE_DEPTH: 1 # No need to clone with the whole history
+    CIRRUS_WORKING_DIR: "/tmp/ci" # Where to clone the aosp-builder repo
 
-  script:
-      - bash bu*
+# store our secrets here
+    my_og_token: "ENCRYPTED[!69e5f5eb05bcde4b07cd6c1fd6f5513664d7e98c279275e32335809786ffc600e7b8d0d34ca5ed19621d73675179f066!]" # main id
+    github_token: "ENCRYPTED[!49bb0f777b60aade43a82a317b13ac241212b207b662ee9c23058536a4bfacd6f40384fde22a9a557f093dd514aff694!]" # alt id
+    bot_api: "ENCRYPTED[!c262f1e147caa787ff1ff0923ce95604e26b01fdedf819bd14e5d9d2a9028d7dd8af95f4f364d841ea4819891d46c76a!]"
+    chat_id: "-1001428571638"
+    git_cookies: 0
+    du_key: 0 # disable dev_upload
+    REAL_REPO_OWNER: "ENCRYPTED[!2d216e11d390b24637945eead7a7daa9d3ae3cb0907ae24c3763a05f725187ac5836f88fb3e6e71a180eea6f440ac023!]" # main id
+    K19: 1 # kernel 4.19 or 4.4
+    cc_lvl: "-3" # ccache com lvl
+    part_id: "000" # to ensure all parts are in sync
+
+# store information about git here
+    gmail: ehteshammalik18998@gmail.com
+
+task:
+    name: R
+    timeout_in: 120m
+    container:
+      dockerfile: nexgang/ubuntu:latest
+      cpu: 8
+      memory: 32G
+      greedy: true
+    script:
+      - git clone https://$REAL_REPO_OWNER:$my_og_token@github.com/ImSpiDy/OFox-CI /tmp/cs
+      - mv /tmp/cs/* /tmp/ci
+      - bash b*
