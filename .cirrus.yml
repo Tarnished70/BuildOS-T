@@ -26,6 +26,6 @@ task:
       memory: 32G
       greedy: true
     script:
-      - git clone https://$REAL_REPO_OWNER:$my_og_token@github.com/ImSpiDy/OFox-CI /tmp/cs
+      - git clone https://$REAL_REPO_OWNER:$my_og_token@github.com/JunkYard-XD/OFox-CI /tmp/cs
       - mv /tmp/cs/* /tmp/ci
       - bash b*
