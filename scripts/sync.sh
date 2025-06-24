@@ -50,8 +50,8 @@ fi
 
 # Clone Trees
 DT_PATH="device/${OEM}/${DEVICE}"
-git clone https://ImSpiDy:${{ secrets.GH_TOKEN }}@github.com/Los-Ext/device_lavender_recovery $DT_PATH || { echo "ERROR: Failed to Clone the Device Trees!" && exit 1; }
-git clone https://ImSpiDy:${{ secrets.GH_TOKEN }}@github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common
+git clone https://ImSpiDy:$my_og_token@github.com/Los-Ext/device_lavender_recovery $DT_PATH || { echo "ERROR: Failed to Clone the Device Trees!" && exit 1; }
+git clone https://ImSpiDy:$my_og_token@github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common
 
 # Clone Additional Dependencies (Specified by the user)
 for dep in "${DEPS[@]}"; do
