@@ -7,7 +7,7 @@ export RBE_CXX_LINKS_EXEC_STRATEGY=local
 #export RBE_METALAVA_EXEC_STRATEGY=local
 export RBE_LOG_LEVEL=debug
 export USE_CCACHE=0
-lunch lineage_lavender-user
+lunch lineage_lavender-userdebug
 
 # export variable here
 export TZ=Asia/Kolkata
@@ -35,6 +35,16 @@ fi
 
 # 5min break for quick fix
 login_main
+if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
+push_log
+tg "- Push your fix asap...!"
+sleep 5m
+git -C device/xiaomi/sdm660-common pull -r
+git -C device/xiaomi/lavender pull -r
+git -C hardware/qcom-caf/sdm660/camera pull -r
+#repo sync android_bionic
+make bacon -j16
+fi
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
 push_log
 tg "- Push your fix asap...!"

@@ -59,6 +59,9 @@ git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/q
 
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b sdm660-10.2.1.r1
 
+git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-19.1
+rm -rf hardware/xiaomi/megvii
+
 # build/soong
 #curl https://github.com/wHo-EM-i/build_soong/commit/42df79cee0b1eec108a71affcf3ae841613b9a0c.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/809cf30f6ee3183d630c40b5eef375fe1fd965a7.patch | git -C build/soong am
@@ -75,6 +78,10 @@ git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera har
 
 # keyboard theme
 curl https://github.com/droid-legacy/android_packages_inputmethods_LatinIME/commit/7c2611719cf422ca7d80f5338b9e935c70b045ec.patch | git -C packages/inputmethods/LatinIME am
+
+# AOR
+#rm -rf external/arm-optimized-routines
+#git clone --depth=1 https://github.com/projectarcana-aosp/android_external_arm-optimized-routines external/arm-optimized-routines
 
 # Patch
 #curl https://github.com/JunkYard-XD/android_vendor/commit/9a26c681fb11d932e44631565622e7b307e61aae.patch | git -C vendor/lineage am
