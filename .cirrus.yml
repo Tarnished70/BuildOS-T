@@ -27,12 +27,13 @@ task:
       memory: 32G
       greedy: true
     init_script:
+       - bash bu*
     #  - git clone https://$REAL_REPO_OWNER:$my_og_token@github.com/JunkYard-XD/OFox-CI /tmp/cs
     #  - mv /tmp/cs/* /tmp/ci
-      - bash scripts/che*
-    symc_script:
-      - bash scripts/sy*
-    compile_script:
-      - bash scripts/bu*
-    upl_script:
-      - bash scripts/upl*
+    #  - bash scripts/che*
+    #symc_script:
+    #  - bash scripts/sy*
+    #compile_script:
+    #  - bash scripts/bu*
+    #upl_script:
+    #  - bash scripts/upl*
