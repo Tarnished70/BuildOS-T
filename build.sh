@@ -9,7 +9,7 @@ repo sync
 git clone https://ImSpiDy:$my_og_token@github.com/Los-Ext/device_lavender_recovery device/xiaomi/lavender
 
 # Magisk
-OF_USE_LATEST_MAGISK=1
+OF_USE_LATEST_MAGISK=0
 if [[ $OF_USE_LATEST_MAGISK = "true" || $OF_USE_LATEST_MAGISK = "1" ]]; then
 	echo "Downloading the Latest Release of Magisk..."
 	LATEST_MAGISK_URL="$(curl -sL https://api.github.com/repos/topjohnwu/Magisk/releases/latest | jq -r . | grep browser_download_url | grep Magisk- | cut -d : -f 2,3 | sed 's/"//g')"
