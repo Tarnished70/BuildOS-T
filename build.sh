@@ -6,7 +6,9 @@ repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifes
 
 repo sync
 
-git clone https://ImSpiDy:$my_og_token@github.com/Los-Ext/device_lavender_recovery device/xiaomi/lavender
+#git clone https://ImSpiDy:$my_og_token@github.com/Los-Ext/device_lavender_recovery device/xiaomi/lavender
+
+git clone https://github.com/Amritorock/device_realme_r5x_recovery device/realme/r5x
 
 # Magisk
 OF_USE_LATEST_MAGISK=0
@@ -28,6 +30,11 @@ export ALLOW_MISSING_DEPENDENCIES=true
 
 . build/envsetup.sh
 
-lunch twrp_lavender-eng
+lunch twrp_r5x-eng
 
 mka recoveryimage
+
+FP=out/target/product/r5x/recovery.img
+
+SERVER=$(curl -X GET 'https://api.gofile.io/servers' | grep -Po '(store*)[^"]*' | tail -n 1)
+curl -X POST https://${SERVER}.gofile.io/contents/uploadfile -F "file=@$FP" | grep -Po '(https://gofile.io/d/)[^"]*'
