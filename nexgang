@@ -1,0 +1,96 @@
+# Base Image: Ubuntu
+FROM ubuntu:22.04
+
+# Working Directory
+WORKDIR /tmp
+
+# Maintainer
+MAINTAINER wHo-EM-i <ehteshammalik18998@gmail.com>
+
+# apt update
+RUN apt update
+
+# Install sudo
+RUN apt install apt-utils sudo -y
+
+# tzdata
+ENV TZ Asia/Kolkata
+
+RUN \
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata \
+&& ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+&& apt-get install -y tzdata \
+&& dpkg-reconfigure --frontend noninteractive tzdata
+
+# set locales 
+RUN apt-get install -y locales \
+        && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+# Install git and ssh
+RUN sudo apt install git ssh -y
+
+# Configure git
+ENV GIT_USERNAME wHo-EM-i
+ENV GIT_EMAIL <ehteshammalik18998@gmail.com>
+RUN \
+    git config --global user.name $GIT_USERNAME \
+&&  git config --global user.email $GIT_EMAIL
+
+# Filesystems
+RUN sudo apt-get install -y \
+    erofs-utils \
+    lld \
+    git-lfs \
+    p7zip \
+    pigz \
+    ccache \
+    zram-config \
+    jq \
+    aria2 \
+    gh \
+    unzip \
+    nano \
+    neofetch \
+    git-core \
+    gnupg \
+    flex \
+    bison \
+    build-essential \
+    zip \
+    curl \
+    wget \
+    tar \
+    zlib1g-dev \
+    libc6-dev-i386 \
+    libncurses5 \
+    x11proto-core-dev \
+    libx11-dev \
+    lib32z1-dev \
+    libgl1-mesa-dev \
+    libxml2-utils \
+    xsltproc \
+    fontconfig \ 
+    python3 \
+    python3-pip && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+RUN mkdir /var/run/sshd
+
+RUN echo 'root:root' | chpasswd
+
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+# Setup Android Build Environment
+RUN \
+git clone https://github.com/akhilnarang/scripts.git /tmp/scripts \
+&& sudo bash /tmp/scripts/setup/android_build_env.sh \
+&& rm -rf /tmp/scripts
+
+CMD ["/usr/sbin/sshd", "-D"]
+
+# Run bash
+CMD ["bash"]
+

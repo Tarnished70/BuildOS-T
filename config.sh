@@ -1,7 +1,12 @@
 #!/bin/bash
 
+sudo apt update
+sudo apt install -y gnupg-agent gpg-agent pinentry-curses
+
+FOX_SYNC="https://gitlab.com/OrangeFox/sync.git"
+
 # Device
-export FOX_BRANCH="fox_12.1"
+export FOX_BRANCH="fox_14.1"
 export DT_LINK="https://gitlab.com/OrangeFox/device/lavender.git -b fox_12.1"
 
 export DEVICE="lavender"
