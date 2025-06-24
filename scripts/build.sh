@@ -53,6 +53,13 @@ echo " "
 # Prepare the Build Environment
 source build/envsetup.sh
 
+# RBE
+git clone -b test https://$REAL_REPO_OWNER:$my_og_token@github.com/projects-nexus/ci-script /tmp/priv
+aria2c https://github.com/xyz-sundram/Releases/releases/download/client-linux-amd64/client-linux-amd64.zip
+unzip -d /tmp/rbe *.zip && rm client-linux-amd64.zip
+bash /tmp/priv/rbe
+export RBE_LOG_LEVEL=debug
+
 # Run the Extra Command
 $EXTRA_CMD
 

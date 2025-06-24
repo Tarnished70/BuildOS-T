@@ -39,3 +39,23 @@ export USE_CCACHE=1
 export CCACHE_SIZE="50G"
 export CCACHE_DIR="$HOME/work/.ccache"
 export J_VAL=16
+
+export FOX_ENABLE_APP_MANAGER=1
+export FOX_USE_BASH_SHELL=1
+export FOX_ASH_IS_BASH=1
+export FOX_USE_TAR_BINARY=1
+export FOX_USE_SED_BINARY=1
+export FOX_USE_XZ_UTILS=1
+export FOX_USE_LZ4_BINARY=1
+export FOX_USE_ZSTD_BINARY=1
+export FOX_USE_DATE_BINARY=1
+
+# retrofitted dynamic partitions
+export FOX_USE_DYNAMIC_PARTITIONS=1; # all builds now support dynamic partitions
+export FOX_BASH_TO_SYSTEM_BIN=1; # install the bash binary to /system/bin/ instead of /sbin/
+export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"
+export FOX_RECOVERY_VENDOR_PARTITION="/dev/block/mapper/vendor"
+export FOX_LAVENDER_KERNEL=4.19
+export FOX_VARIANT="kernel_419"
+export FOX_USE_DATA_RECOVERY_FOR_SETTINGS=1
+export FOX_VANILLA_BUILD=1
