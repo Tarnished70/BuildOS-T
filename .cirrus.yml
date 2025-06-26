@@ -3,8 +3,8 @@ env: # Environment variables to pass to all tasks
     CIRRUS_WORKING_DIR: "/tmp" # Where to clone the aosp-builder repo
 
 # store our secrets here
-    my_og_token: "ENCRYPTED[!69e5f5eb05bcde4b07cd6c1fd6f5513664d7e98c279275e32335809786ffc600e7b8d0d34ca5ed19621d73675179f066!]" # main id
-    REAL_REPO_OWNER: "ENCRYPTED[!2d216e11d390b24637945eead7a7daa9d3ae3cb0907ae24c3763a05f725187ac5836f88fb3e6e71a180eea6f440ac023!]" # main id
+    my_og_token: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
+    REAL_REPO_OWNER: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
 
 task:
     name: kernel
