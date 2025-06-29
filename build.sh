@@ -1,5 +1,12 @@
 #!/bin/bash
 
+telegram_message() {
+	curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+	-d chat_id="${TG_CHAT_ID}" \
+	-d parse_mode="HTML" \
+	-d text="$1"
+}
+
 mkdir rec
 cd rec
 repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
@@ -39,3 +46,24 @@ FILENAME=out/target/product/lavender/recovery.img
 SERVER=$(curl -X GET 'https://api.gofile.io/servers' | grep -Po '(store*)[^"]*' | tail -n 1)
 curl -X POST https://${SERVER}.gofile.io/contents/uploadfile -F "file=@$FILENAME" | grep -Po '(https://gofile.io/d/)[^"]*' > link.txt
 DL_LINK=$(cat link.txt)
+
+# Show the Download Link
+echo "Download Link: ${DL_LINK}" || { echo "ERROR: Failed to Upload the Build!"; }
+
+# Send the Message on Telegram
+echo -e \
+"
+🦊 OrangeFox Recovery CI
+
+✅ Build Completed Successfully!
+
+📱 Device: "${DEVICE}"
+🖥 Build System: "${FOX_BRANCH}"
+⬇️ Download Link: <a href=\"${DL_LINK}\">Here</a>
+📅 Date: "$(date +%d\ %B\ %Y)"
+⏱ Time: "$(date +%T)"
+" > tg.html
+
+TG_TEXT=$(< tg.html)
+
+telegram_message "$TG_TEXT"
