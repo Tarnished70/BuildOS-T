@@ -32,22 +32,25 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/LineageOS/android -b lineage-19.1 --git-lfs -g default,-mips,-darwin,-notdefault
-git clone https://github.com/wHo-EM-i/manifest.git --depth 1 -b 12.1 .repo/local_manifests
+repo init --depth=1 --no-repo-verify -u https://github.com/JunkYard-XD/manifest -b 12-arcana --git-lfs -g default,-mips,-darwin,-notdefault
+#git clone https://github.com/wHo-EM-i/manifest.git --depth 1 -b 12.1 .repo/local_manifests
 
 # Sync source without unnecessary messages, try with -j16 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
+# imp hax
+grep -rl 'getRenderEngine().cleanupPostRender()' frameworks/native | xargs sed -i '/^[[:space:]]*\/\//! s/\(getRenderEngine().cleanupPostRender()\)/\/\/\1/'
+
 git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 12.1
 git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 12.1
-#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
-#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
-#git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b sonix
+git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 12.1
+git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 12.1
+git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b sonix
 git -C kernel/xiaomi/sdm660 apply old-rdp.p
 #git -C kernel/xiaomi/sdm660 apply /tmp/ci/old-rdp.p
 
 # extra stuff
-#git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git /tmp/rom/prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
+git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git /tmp/rom/prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
 
 # soc hals
 rm -rf /tmp/rom/hardware/qcom-caf/sdm660/display
@@ -59,25 +62,48 @@ git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/q
 
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b sdm660-10.2.1.r1
 
-git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-19.1
+#git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-19.1
+git clone https://github.com/ArrowOS-Devices/android_hardware_xiaomi hardware/xiaomi -b arrow-12.1
 rm -rf hardware/xiaomi/megvii
+
+# RBE out fix
+curl https://github.com/wHo-EM-i/build_soong/commit/d6ed01c1ff57ca44c43698edd81930e4cd86eb49.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/1b65ad830978e9e41b5bc38d82d4b306c36475dc.patch | git -C build/soong am
 
 # build/soong
 #curl https://github.com/wHo-EM-i/build_soong/commit/42df79cee0b1eec108a71affcf3ae841613b9a0c.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/809cf30f6ee3183d630c40b5eef375fe1fd965a7.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/1f4a7bed507a34ca6e46a5ab5b4017899133cab0.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77aec7b2a80d980.patch | git -C build/soong am
+# heapsize for r8
+curl https://github.com/Los-Ext/android_build_soong/commit/b7cebda77a842ab60bccac07257ea2347846fd16.patch | git -C build/soong am
 
 #git -C build/soong fetch https://github.com/wHo-EM-i/build_soong -t 12.1
 #git -C build/soong cherry-pick 68f350e53d7b82d412824b694acda4859bb97547^..b7cebda77a842ab60bccac07257ea2347846fd16
 
-# fwb (for 3finger ss)
-#curl https://github.com/wHo-EM-i/android_frameworks_base/commit/f33a3ab154fa728df3c77d05caf774dab0b50d63.patch | git -C frameworks/base am
-#curl https://github.com/wHo-EM-i/android_frameworks_base/commit/a15d8fe10efb72f541c52d00d26d9bce52f1ba79.patch | git -C frameworks/base am
-#curl https://github.com/wHo-EM-i/android_frameworks_base/commit/4a12db3bb0cb87f4efa910c9c575bd02cba5a81e.patch | git -C frameworks/base am
+# fw_native
+git -C frameworks/native fetch https://github.com/Los-Ext/android_frameworks_native -t 12.1
+git -C frameworks/native cherry-pick ec75467dcc5e2b793844d4f0e288b6f72a3ad4c7^..7b9bc96e9e2ae6e0474967906386e39506582f80
+curl https://github.com/Los-Ext/android_frameworks_native/commit/064bcf08ff1c426f512f151ea3178383d513f86a.patch | git -C frameworks/native am
+#curl https://github.com/Los-Ext/android_frameworks_native/commit/3e296ed386c19e9279ac2f4c7791ee36f505032e.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+curl https://github.com/Los-Ext/android_frameworks_native/commit/fb8cf499a157c519c1ee1733ef98c79512ee764b.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+curl https://github.com/Los-Ext/android_frameworks_native/commit/eb180c7eeba90f11fe23858ad6ea388e7534144d.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+curl https://github.com/Los-Ext/android_frameworks_native/commit/5f347ba9bc99088a44912ce02ab91f89f918365f.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+curl https://github.com/Los-Ext/android_frameworks_native/commit/80da66b3211d2c80a09aa4fabc0724449d230108.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+curl https://github.com/Los-Ext/android_frameworks_native/commit/6813467bf9c29327a9bdc2813a0d9e285b9342f3.patch | git -C frameworks/native am
+git -C frameworks/native am --abort
+git -C frameworks/native cherry-pick 82b63e0eb977cb9603db54f039685a31cf3c29bd^..50fc5bd47e745baffd399e1d764cd10d67f5e121
+
+# fwb gfx lowram for blur
+curl https://github.com/wHo-EM-i/android_frameworks_base/commit/d1dc659cc04d11ad4996dd2901f7b1c0ff5b1b04.patch | git -C frameworks/base am
 
 # keyboard theme
-curl https://github.com/droid-legacy/android_packages_inputmethods_LatinIME/commit/7c2611719cf422ca7d80f5338b9e935c70b045ec.patch | git -C packages/inputmethods/LatinIME am
+#curl https://github.com/droid-legacy/android_packages_inputmethods_LatinIME/commit/7c2611719cf422ca7d80f5338b9e935c70b045ec.patch | git -C packages/inputmethods/LatinIME am
 
 # AOR
 #rm -rf external/arm-optimized-routines
@@ -86,11 +112,16 @@ curl https://github.com/droid-legacy/android_packages_inputmethods_LatinIME/comm
 # Patch
 #curl https://github.com/JunkYard-XD/android_vendor/commit/9a26c681fb11d932e44631565622e7b307e61aae.patch | git -C vendor/lineage am
 
-#curl https://github.com/droid-legacy/android_build_make/commit/9f8049846eb61be7daadeb633f8207b27f00d330.patch | git -C build/make am
+curl https://github.com/Los-Ext/android_build/commit/bca464975710ee9bac67edb560224eee5a6f5199.patch | git -C build/make am
+curl https://github.com/Los-Ext/android_build/commit/f95e40dc66a477610746f47c6f70bcb526c4c283.patch | git -C build/make am
+git -C build/make am --abort
+curl https://github.com/Los-Ext/android_build/commit/8ef524c1fc244f4ed21677125b89b76d67b35721.patch | git -C build/make am
+git -C build/make am --abort
+curl https://github.com/Los-Ext/android_build/commit/39302f6f9f59a7b32fcb6d115bcdfb78b25df340.patch | git -C build/make am
 
 # qti powerhal
-rm -rf /tmp/rom/vendor/qcom/opensource/power
-git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 12.1
+#rm -rf /tmp/rom/vendor/qcom/opensource/power
+#git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 12.1
 
 # keys
 #git clone --depth=1 https://github.com/Los-Ext/vendor_lineage-priv_keys vendor/lineage-priv/keys
