@@ -28,10 +28,10 @@ gh config set -h github.com
 login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
-#exit 0
+exit 0
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/VoltageOS/manifest.git -b 13 --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/JunkYard-XD/manifest -b vos13 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
@@ -39,9 +39,11 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 # tree
 
 if [ $K19 == 1 ]; then
-git clone --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 && git -C kernel/xiaomi/sdm660 revert --no-edit 4cbc441be5366fdc5e7cc09c989df617c9c162d0
+#git clone --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 && git -C kernel/xiaomi/sdm660 revert --no-edit 4cbc441be5366fdc5e7cc09c989df617c9c162d0
+git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b sonix
+git -C kernel/xiaomi/sdm660 apply old-rdp.p
 #test hevc-10bit fix
-curl https://github.com/Atom-X-Devs/scarlet_xiaomi_sdm660/commit/572d01152a3ad83fc401c1af19adbdf39fe8a7e1.patch | git -C kernel/xiaomi/sdm660 am
+#curl https://github.com/Atom-X-Devs/scarlet_xiaomi_sdm660/commit/572d01152a3ad83fc401c1af19adbdf39fe8a7e1.patch | git -C kernel/xiaomi/sdm660 am
 else
 git clone --depth=1 https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-rdp
 fi
@@ -65,19 +67,27 @@ rm -rf hardware/xiaomi/megvii/*.bp
 # patch
 # bionic
 rm -rf /tmp/rom/bionic && git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
-curl https://github.com/wHo-EM-i/bionic/commit/585562aa03169194a2b0c32e72c752ff07a2c71d.patch | git -C bionic am
+#curl https://github.com/wHo-EM-i/bionic/commit/585562aa03169194a2b0c32e72c752ff07a2c71d.patch | git -C bionic am
 
 # soong patch
-curl https://github.com/wHo-EM-i/build_soong/commit/1f4a7bed507a34ca6e46a5ab5b4017899133cab0.patch | git -C build/soong am
 curl https://github.com/wHo-EM-i/build_soong/commit/d6ed01c1ff57ca44c43698edd81930e4cd86eb49.patch | git -C build/soong am
 curl https://github.com/wHo-EM-i/build_soong/commit/1b65ad830978e9e41b5bc38d82d4b306c36475dc.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/22be3e99bd352172e1c2986d2646deefc3499c37.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/778455b4efe9cbb8522fc00478e8d8fe76c01fb2.patch | git -C build/soong am
+curl https://github.com/wHo-EM-i/build_soong/commit/b2ab4a1fabf4b405ebc865a79f328c330578330c.patch | git -C build/soong am
 
 # build_make
 curl https://github.com/VoltageOS/build/commit/765c1bfe16e78fe8aec256e507d4dc1445187f5e.patch | git -C build/make am
+curl https://github.com/wHo-EM-i/build/commit/530d84f56cd35cbf645aaf8574fc4df39799ea60.patch | git -C build/make am
+#curl https://github.com/wHo-EM-i/build/commit/24116259c07fc438097d6fb168d380496d66f6a5.patch | git -C build/make am
+#curl https://github.com/wHo-EM-i/build/commit/920a20cca2cccdb1161ab7135a70835db0c5508d.patch | git -C build/make am
 
 # frameworks_native
 curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/dabdcc7ed7cb126f61f8f48602be62d7944b6eee.patch | git -C frameworks/native am
 curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/ee95d097a8686e37b14e80237b7299a3cca67a20.patch | git -C frameworks/native am
+
+# fwb
+curl https://github.com/wHo-EM-i/android_frameworks_base/commit/d42ee32d3b4b82bf7e1275b7bdb1000cb7252061.patch | git -C frameworks/base am
 
 # vendor_voltage
 curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/09d98ff84e42287ab56fcd621aa1cf3d9933c2fe.patch | git -C vendor/voltage am
@@ -98,7 +108,7 @@ rm -rf hardware/qcom-caf/sdm660/display
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 13-caf-sdm660
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 13-caf-sdm660
 #mine
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 15-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 13-caf-sm8150
 #pix106
 #git clone --depth=1 https://github.com/pix106/android_hardware_qcom-caf_display hardware/qcom-caf/sdm660/display -b lineage-22.1-caf-sdm660
 

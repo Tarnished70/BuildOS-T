@@ -10,7 +10,7 @@ env: # Environment variables to pass to all tasks
     git_cookies: 0
     du_key: 0 # disable dev_upload
     K19: 1 # kernel 4.19 or 4.4
-    part_id: "001" # to ensure all parts are in sync
+    part_id: "111" # to ensure all parts are in sync
     REAL_REPO_OWNER: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
 
 # store information about git here

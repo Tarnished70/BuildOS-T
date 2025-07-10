@@ -3,12 +3,10 @@
 . build/envsetup.sh
 # RBE
 . /tmp/ci/rbe
-#export OUT_DIR=out
-#export RBE_OUT_DIR=out
 export RBE_CXX_LINKS_EXEC_STRATEGY=local
 export RBE_METALAVA_EXEC_STRATEGY=local
 export RBE_LOG_LEVEL=debug
-env | grep RBE
+#env | grep RBE
 lunch voltage_lavender-userdebug
 
 build_gapps=0
@@ -28,6 +26,8 @@ export WITH_GMS=false
 exp_gapps () {
 export USE_GAPPS=false
 }
+
+login_main
 
 get_system () {
 [ ! -e out/target/product/lavender/system.img ] && make systemimage -j16
@@ -85,12 +85,12 @@ upload *_boot.zip
 
 prepare_images () {
 tg "- Preparing for flashable build!"
-[ ! -e out/target/product/lavender/system.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_system.zip && unzip *_system.zip
-[ ! -e out/target/product/lavender/product.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_product.zip && unzip *_product.zip
-[ ! -e out/target/product/lavender/system_ext.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_system_ext.zip && unzip *_system_ext.zip
-[ ! -e out/target/product/lavender/vendor.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_vendor.zip && unzip *_vendor.zip
-[ ! -e out/target/product/lavender/odm.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_odm.zip && unzip *_odm.zip
-[ ! -e out/target/product/lavender/boot.img ] && down $upload_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_boot.zip && unzip *_boot.zip
+[ ! -e out/target/product/lavender/system.img ] && gh release download -R $upload_link ${rom_name} -p '*_system.zip' && unzip *_system.zip
+[ ! -e out/target/product/lavender/product.img ] && gh release download -R $upload_link ${rom_name} -p '*_product.zip' && unzip *_product.zip
+[ ! -e out/target/product/lavender/system_ext.img ] && gh release download -R $upload_link ${rom_name} -p '*_system_ext.zip' && unzip *_system_ext.zip
+[ ! -e out/target/product/lavender/vendor.img ] && gh release download -R $upload_link ${rom_name} -p '*_vendor.zip' && unzip *_vendor.zip
+[ ! -e out/target/product/lavender/odm.img ] && gh release download -R $upload_link ${rom_name} -p '*_odm.zip' && unzip *_odm.zip
+[ ! -e out/target/product/lavender/boot.img ] && gh release download -R $upload_link ${rom_name} -p '*_boot.zip' && unzip *_boot.zip
 mv out/target/product/lavender/system.img out/target/product/lavender/product.img out/target/product/lavender/system_ext.img out/target/product/lavender/vendor.img out/target/product/lavender/odm.img out/target/product/lavender/boot.img /tmp/ci/nex
 cd /tmp/ci/nex
 echo "- Convert sparse images to raw images"
@@ -162,14 +162,46 @@ esac
 
 compile_plox () {
 #split_build
-#final_zip
-m productimage
-m systemextimage
-m systemimage
-m bacon #-j16
+
+#get_product
+#get_system_ext
+#get_system
+#get_vendor
+# fking ksu errors
+#ls out/target/product/lavender/vendor.img || get_vendor
+#get_odm
+#get_boot
+final_zip
+#m productimage
+#m systemextimage
+#m systemimage
+#m bacon #-j16
 
 # KSU bc -_-
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ] && [ $(cat /tmp/rom/out/error.log | grep -o -e 'KernelSU' -e 'FAILED: ' | head -n 1) ]; then
-m bacon #-j16
+m bacon -j16
+fi
+# 5min break for quick fix
+login_main
+if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
+push_log
+tg "- Push your fix asap...!"
+sleep 5m
+git -C device/xiaomi/sdm660-common pull -r
+git -C device/xiaomi/lavender pull -r
+git -C hardware/qcom-caf/sdm660/camera pull -r
+#repo sync android_bionic
+make bacon -j16
+fi
+# another 5m break
+if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
+push_log
+tg "- Push your fix asap...!"
+sleep 5m
+git -C device/xiaomi/sdm660-common pull -r
+git -C device/xiaomi/lavender pull -r
+git -C hardware/qcom-caf/sdm660/camera pull -r
+#repo sync android_bionic
+make bacon -j16
 fi
 }
