@@ -5,6 +5,7 @@ env: # Environment variables to pass to all tasks
 # store our secrets here
     my_og_token: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
     REAL_REPO_OWNER: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
+    BOT_API: "ENCRYPTED[e09e9a0cc5e18746d2e09f1e0e3d23c5093407c11489831f87d4fea889b3e5e6b44d95bd27bc85a3caecd26c50080a54]"
 
 task:
     name: kernel
