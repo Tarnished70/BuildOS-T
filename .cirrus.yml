@@ -16,6 +16,6 @@ task:
       memory: 32G
       greedy: true
     run_script:
-      - git clone --depth=1 https://github.com/ImSpiDy/android_kernel_xiaomi_sm7435 /tmp/kernel
+      - git clone --depth=1 https://github.com/ImSpiDy/android_kernel_xiaomi_sm7435 /tmp/kernel -b susfs
       - cd /tmp/kernel
       - bash kbuild.sh
