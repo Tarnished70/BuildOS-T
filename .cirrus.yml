@@ -19,4 +19,5 @@ task:
       - git clone --depth=1 https://github.com/garnet-random/android_kernel_xiaomi_sm7435-modules /tmp/kernel/xiaomi/sm7435-modules
       - git clone --depth=1 https://github.com/ImSpiDy/android_kernel_xiaomi_sm7435 /tmp/kernel/xiaomi/sm7435
       - cd /tmp/kernel/xiaomi/sm7435
-      - bash build.sh
+      - bash build.sh garnet
+      - ls out
