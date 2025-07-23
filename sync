@@ -32,20 +32,20 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/JunkYard-XD/manifest.git -b 11 --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/crdroid-security/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
 # tree
 if [ $K19 == 1 ]; then
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b sonix
+git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b scar
 cd kernel/xiaomi/sdm660
-echo "Adding CONFIG_QCA_CLD_WLAN_LEGACY=y"
-echo "CONFIG_QCA_CLD_WLAN_LEGACY=y" >> arch/arm64/configs/lavender_defconfig
-sed -i '/CONFIG_INITRAMFS_IGNORE_SKIP_FLAG=/s/.*/CONFIG_INITRAMFS_IGNORE_SKIP_FLAG=n/' arch/arm64/configs/lavender_defconfig
+#echo "Adding CONFIG_QCA_CLD_WLAN_LEGACY=y"
+#echo "CONFIG_QCA_CLD_WLAN_LEGACY=y" >> arch/arm64/configs/lavender_defconfig
 echo "Dropping RDP"
-git apply drop_rdp.p
+echo "# CONFIG_INITRAMFS_IGNORE_SKIP_FLAG is not set" >> arch/arm64/configs/lavender_defconfig
+git apply snx/drop_rdp.p
 #bash ksu.sh
 #echo "CONFIG_KSU=y" >> arch/arm64/configs/lavender_defconfig
 #echo "CONFIG_OVERLAY_FS=y" >> arch/arm64/configs/lavender_defconfig
@@ -60,14 +60,14 @@ git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common devic
 git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
 git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
 
-#rm -rf hardware/xiaomi
-#git clone --depth=1 https://github.com/arrowos-devices/android_hardware_xiaomi hardware/xiaomi -b arrow-13.1
+git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
+git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-18.1
+rm -rf hardware/xiaomi/megvii
 
 #rm -rf device/qcom/sepolicy-legacy-um
 #git clone --depth=1 https://github.com/ArrowOS/android_device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um -b arrow-13.1
 
 #rm -rf device/xiaomi/lavender/libhidl
-#rm -rf hardware/xiaomi/megvii/*.bp
 
 # patch
 #rm -rf /tmp/rom/bionic
@@ -80,7 +80,7 @@ if [ $K19 == 1 ]; then
 #sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 11-caf-sdm660
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 11-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 11-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 11-caf-sm8150
 else
 #sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' vendor/*/config/B*Qcom.mk
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b sdm660-4.4
@@ -122,17 +122,25 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 
 # hax
 # fwb
-curl https://github.com/xdCLO-Enhanced/xd_frameworks_base/commit/efb19839c2215e4d087d9286b76c73c8ae15c701.patch | git -C frameworks/base am
-#rm -rf frameworks/base; git clone --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
-git -C frameworks/base fetch https://github.com/JunkYard-XD/android_frameworks_base -t 11.0
-git -C frameworks/base cherry-pick d8be6329bcdfc9f384a350d04008f7e6853512eb^..3b6a25be3ad541488105bea9d7acdefae23f88e1
-# PPU
-git -C frameworks/base cherry-pick 87b4c62e3cbab2da36656dfddaf750aa1e008691
+#curl https://github.com/xdCLO-Enhanced/xd_frameworks_base/commit/efb19839c2215e4d087d9286b76c73c8ae15c701.patch | git -C frameworks/base am
+rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
+#git -C frameworks/base fetch https://github.com/JunkYard-XD/android_frameworks_base -t 11.0
+#git -C frameworks/base cherry-pick d8be6329bcdfc9f384a350d04008f7e6853512eb^..3b6a25be3ad541488105bea9d7acdefae23f88e1
+# PPU (prop based impl)
+#git -C frameworks/base cherry-pick 87b4c62e3cbab2da36656dfddaf750aa1e008691
+# BL Lock spoof
+#git -C frameworks/base cherry-pick 07651054fe4bd97922d8ff80e97f2ff85c19115b
+
+#git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
+# disable gms spoof overlay
+#git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
+
+# Clang
 git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
 
 # qti powerhal
-rm -rf /tmp/rom/vendor/qcom/opensource/power
-git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 11.0
+#rm -rf /tmp/rom/vendor/qcom/opensource/power
+#git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 11.0
 
 git config --global user.name "$CIRRUS_REPO_OWNER"
 echo "switching account" && gh auth logout
@@ -148,37 +156,6 @@ Status: $progress"
 echo "$(($SECONDS / 60))" > /tmp/sync_time.txt
 
 
-dload_out () {
-tg "Downloading OUT backup"
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.001
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.002
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.003
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.004
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.005
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.006
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.007
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.008
-down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}_out.zip.009
-
-# Extract out so ci can use it
-if [ -e *_out.zip.001 ]; then
-echo "• Extracting OUT •"
-time 7za x *_out.zip.001
-fi
-if [ -e out.tar.gz ]; then
-time tar xf out.tar.gz
-fi
-
-if [ -e *_out.zip.001 ]; then
-tg "$rom_name out downloaded successfully!
-Total Size: $(du -sh ${PWD}/out | cut -d - -f 1 | cut -d / -f 1)
-Time Took: $(($SECONDS / 60)) minute(s) and $(($SECONDS % 60)) second(s).
-Status: $progress"
-else
-echo "Skipping OUT Download on 1st build..!"
-fi
-}
-
 #check_build_type
 #case "$build_type" in
 #		 C|c)
@@ -187,7 +164,5 @@ fi
 #		 *)
 #		 #dload_out
 #esac
-
-rm -rf *_out.zip.* out.tar.gz
 
 neofetch

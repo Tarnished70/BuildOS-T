@@ -23,6 +23,7 @@ task:
       dockerfile: nexgang
       cpu: 8
       memory: 32G
+      stateful: true
       greedy: true
     down_background_script:
       - git clone -b test https://$REAL_REPO_OWNER:$my_og_token@github.com/projects-nexus/ci-script /tmp/cs
