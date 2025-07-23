@@ -52,6 +52,10 @@ git clone --depth=1 https://github.com/Los-Ext/vendor_lineage-priv_keys vendor/l
 #git clone https://github.com/xdCLO/android_vendor_lawnchair
 rm -rf vendor/lawnchair
 
+# dups
+rm -rf vendor/qcom/opensource/vibrat*
+rm -rf vendor/qassa/signing
+
 git config --global user.name "$CIRRUS_REPO_OWNER"
 echo "switching account" && gh auth logout
 login_main # main id
