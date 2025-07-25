@@ -49,6 +49,10 @@ git clone --depth=1 https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/c
 
 git clone --depth=1 https://github.com/Los-Ext/vendor_lineage-priv_keys vendor/lineage-priv/keys
 
+# power
+rm -rf vendor/qcom/opensource/power
+git clone --depth=1 https://github.com/JunkYard-XD/vendor_qcom_opensource_power vendor/qcom/opensource/power
+
 #git clone https://github.com/xdCLO/android_vendor_lawnchair
 rm -rf vendor/lawnchair
 
