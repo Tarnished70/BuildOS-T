@@ -18,6 +18,5 @@ task:
       - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/ImSpiDy/kernel_xiaomi_lavender-4.19 /tmp/kernel
       - cd /tmp/kernel
       - bash build.sh --KSU --RDP
-      #- bash build.sh --KSU --HEVC
-      #- bash build.sh --KSU --Legacy
+      - bash build.sh --KSU --Legacy
       #- bash build.sh --KSU --ORDP
