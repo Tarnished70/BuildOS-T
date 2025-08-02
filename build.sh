@@ -7,13 +7,13 @@ export RBE_CXX_LINKS_EXEC_STRATEGY=local
 export RBE_METALAVA_EXEC_STRATEGY=local
 export RBE_LOG_LEVEL=debug
 #env | grep RBE
-lunch voltage_lavender-userdebug
+lunch arrow_lavender-userdebug
 
 build_gapps=0
 
 # export variable here
 export TZ=Asia/Kolkata
-#export SELINUX_IGNORE_NEVERALLOWS=true
+export SELINUX_IGNORE_NEVERALLOWS=true
 export RELAX_USES_LIBRARY_CHECK=true
 if [ $K19 == 1 ]; then
 export TARGET_KERNEL_VERSION=4.19
@@ -22,6 +22,7 @@ export TARGET_KERNEL_VERSION=4.4
 fi
 export PRODUCT_DEFAULT_DEV_CERTIFICATE=vendor/lineage-priv/keys/releasekey
 export WITH_GMS=false
+export ARROW_GAPPS=false
 
 exp_gapps () {
 export USE_GAPPS=false
@@ -136,7 +137,7 @@ prepare_images
 convert_dat
 convert_br
 tg "- Zipping OTA Package"
-zip -r1v ${rom_name}-${branch_name}-Community-lavender-$(date +"%Y%m%d-%H%S").zip *
+zip -r1v ${rom_name}-13.2-Community-lavender-$(date +"%Y%m%d-%H%S").zip *
 mkdir -p /tmp/rom/out/target/product/lavender
 mv *.zip /tmp/rom/out/target/product/lavender
 cd /tmp/rom && ls /tmp/rom/out/target/product/lavender/*.zip
@@ -166,11 +167,11 @@ compile_plox () {
 #get_product
 #get_system_ext
 #get_system
-#get_vendor
+get_vendor
 # fking ksu errors
-#ls out/target/product/lavender/vendor.img || get_vendor
-#get_odm
-#get_boot
+ls out/target/product/lavender/vendor.img || get_vendor
+get_odm
+get_boot
 final_zip
 #m productimage
 #m systemextimage
