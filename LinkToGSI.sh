@@ -93,4 +93,4 @@ for partition in $partitions; do
     fi
 done
 
-sudo bash XorcistGSITool.sh "UnpackedROMs/system" "$ROM_TYPE"
+sudo bash SGSITool.sh "UnpackedROMs/system" "$ROM_TYPE"

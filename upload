@@ -1,0 +1,16 @@
+#!/bin/bash
+
+. /tmp/sgsi/function
+
+SGSI=$(ls *.img)
+
+# compress img to tar.gz (comp lvl 6)
+echo "- Compressing $SGS ...!"
+com $SGSI 6
+
+# Notification
+tg "SGSI Upload Started!
+Status: $progress"
+
+echo "- Uploading $SGSI.tar.gz ...!"
+push_builds

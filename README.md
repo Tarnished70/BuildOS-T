@@ -1,12 +1,9 @@
-## Released GSIs
-Telegram channel: https://t.me/XorcistGSIS
-
 ## How to use
 
 ### Download tools
 ```
-git clone https://github.com/XorcistGSI/XorcistGSITool.git
-cd XorcistGSITool
+git clone --single-branch --depth=1 https://github.com/Tarnished70/BuildOS-T.git -b sgsi SGSITool
+cd SGSITool
 ```
 
 ### For setting up requirements

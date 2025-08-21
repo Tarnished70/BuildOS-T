@@ -1,0 +1,84 @@
+# Lets store all our function at one place
+
+# set your gmail and email
+git config --global user.email "ehteshammalik18998@gmail.com"
+git config --global user.name "$CIRRUS_REPO_OWNER"
+
+# lets store some variables
+github_repo="https://$REAL_REPO_OWNER:$github_token@github.com/$CIRRUS_REPO_FULL_NAME"
+progress=https://cirrus-ci.com/build/$CIRRUS_BUILD_ID
+upload_link=https://github.com/ImSpiDy/Test-Builds
+
+# Compress function with pigz for faster compression
+com () {
+tar --use-compress-program="pigz -k -$2 " -cf $1.tar.gz $1
+}
+
+login_main () {
+echo $my_og_token > mytoken.txt # login in github
+gh auth login --with-token < mytoken.txt
+}
+
+# download
+down () {
+SECONDS=0
+time aria2c $1 -x16 -s50
+}
+
+# upload our rom zip
+upload () {
+# git upload
+gh release create SGSI --generate-notes --repo $upload_link
+gh release upload --clobber SGSI $1 --repo $upload_link
+
+# post msg
+github_url=$upload_link/releases/download/SGSI/$1
+
+tg "Build Succeed!
+Filename: $1
+File Size: $(ls -sh ${PWD}/$1 | cut -d - -f 1 | cut -d / -f 1)
+Github link: $github_url"
+
+}
+
+# push to telegram
+tg () {
+curl -s "https://api.telegram.org/bot${bot_api}/sendmessage" --data "text=$1&chat_id=${chat_id}"
+}
+
+tg_doc () {
+		curl -F document=@$1 "https://api.telegram.org/bot${bot_api}/sendDocument" \
+		-F chat_id="$chat_id" \
+		-F "disable_web_page_preview=true" \
+		-F "parse_mode=html" \
+		-F caption="$2"
+}
+
+push_builds () {
+login_main
+cd /tmp/sgsi/output
+ls *.gz && autoup *.gz
+}
+
+goupload () {
+# File to Upload 
+FILE="@$1" 
+
+# Find the Best server to upload
+SERVER=$(curl -X GET 'https://api.gofile.io/servers' | grep -Po '(store*)[^"]*' | tail -n 1)
+UPLOAD=$(curl -X POST https://${SERVER}.gofile.io/contents/uploadfile -F "file=${FILE}" | grep -Po '(https://gofile.io/d/)[^"]*')
+GOLINK=$(echo $UPLOAD)
+
+tg "Build Succeed!
+Filename: $1
+File Size: $(ls -sh ${PWD}/$1 | cut -d - -f 1 | cut -d / -f 1)
+Download Link: $GOLINK"
+}
+
+autoup () {
+if [ $(find ./ -size +2G -a -name $1) ]; then
+goupload $1
+else
+upload $1
+fi
+}
