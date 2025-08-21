@@ -19,13 +19,18 @@ usage() {
 supported_roms() {
     echo "Available ROMs:"
     echo ""
-    declare -a versions=(15)
+    declare -a versions=(12 12.1 13 14 15)
     for version in "${versions[@]}"; do
-            names=$(find "ROMsPatches/$version" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
+        rom_dir="ROMsPatches/$version"
+        if [ -d "$rom_dir" ]; then
+            names=$(find "$rom_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
             filtered=$(echo "$names" | grep -vxF -f <(printf '%s\n' "${versions[@]}"))
+            if [ -n "$filtered" ]; then
                 echo "Android $version:"
                 echo "$filtered" | sed 's|^|  - |' | tr '\n' '\n'
                 echo ""
+            fi
+        fi
     done
 }
 
@@ -43,7 +48,7 @@ fi
 rm -rf "Temp"
 mkdir -p "$BASE_DIR"
 echo "Copying to temp directory"
-cp -r "$INPUT_DIR/". "$BASE_DIR/"
+cp -r "$INPUT_DIR/." "$BASE_DIR/"
 
 SDK_VERSION=$(grep -m1 "ro.build.version.sdk" "$BASE_DIR/system/build.prop" | cut -d '=' -f2 | tr -dc '0-9')
 
@@ -53,6 +58,18 @@ if [ -z "$SDK_VERSION" ] || ! [[ "$SDK_VERSION" =~ ^[0-9]+$ ]]; then
 fi
 
 case "$SDK_VERSION" in
+  31)
+    android_version="12"
+    ;;
+  32)
+    android_version="12.1"
+    ;;
+  33)
+    android_version="13"
+    ;;
+  34)
+    android_version="14"
+    ;;
   35)
     android_version="15"
     ;;

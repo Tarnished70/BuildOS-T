@@ -20,20 +20,25 @@ usage() {
   echo "  rom_type  - Type of rom"
   echo ""
   echo "Example:"
-  echo "  sudo bash $0 https://dl.google.com/dl/android/aosp/lynx-bp1a.250505.005.b1-factory-45a1393f.zip Pixel"
+  echo "  sudo bash $0 https://dl.google.com/dl/android/aosp/redfin-tq3a.230901.001.c2-factory-ca20bd02.zip Pixel"
   echo ""
 }
 
 supported_roms() {
     echo "Available ROMs:"
     echo ""
-    declare -a versions=(15)
+    declare -a versions=(12 12.1 13 14 15)
     for version in "${versions[@]}"; do
-            names=$(find "ROMsPatches/$version" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
+        rom_dir="ROMsPatches/$version"
+        if [ -d "$rom_dir" ]; then
+            names=$(find "$rom_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
             filtered=$(echo "$names" | grep -vxF -f <(printf '%s\n' "${versions[@]}"))
+            if [ -n "$filtered" ]; then
                 echo "Android $version:"
                 echo "$filtered" | sed 's|^|  - |' | tr '\n' '\n'
                 echo ""
+            fi
+        fi
     done
 }
 
@@ -43,15 +48,16 @@ if [ -z "$2" ]; then
   exit 0
 fi
 
-rm -rf "DownloadedROMs"
-rm -rf "UnpackedROMs"
-mkdir -p "DownloadedROMs"
-mkdir -p "UnpackedROMs"
+rm -rf DownloadedROMs
+rm -rf UnpackedROMs
+
+mkdir -p DownloadedROMs
+mkdir -p UnpackedROMs
 
 if [ -f "$ROM_LINK" ]; then
     Tools/Firmware_extractor/extractor.sh "$ROM_LINK" "UnpackedROMs/"
 else
-    aria2c "$ROM_LINK" -d "DownloadedROMs/"
+    wget -P "DownloadedROMs/" "$ROM_LINK"
     Tools/Firmware_extractor/extractor.sh "DownloadedROMs/"* "UnpackedROMs/"
 fi
 
@@ -66,7 +72,7 @@ for partition in $partitions; do
         else
             sudo mount "UnpackedROMs/$partition.img" "UnpackedROMs/temp_mount"
         fi
-        cp -r "UnpackedROMs/temp_mount/". "UnpackedROMs/$partition/"
+        cp -r "UnpackedROMs/temp_mount/." "UnpackedROMs/$partition/"
         sudo umount -R "UnpackedROMs/temp_mount"
     fi
 done
@@ -82,7 +88,7 @@ for partition in $partitions; do
         fi
         if [ -d "UnpackedROMs/$partition" ]; then
             echo "Moving $partition into root"
-            mv "UnpackedROMs/$partition" "$source_dir/"..
+            mv "UnpackedROMs/$partition" "$source_dir/.."
         fi
     fi
 done
