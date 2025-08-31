@@ -1,6 +1,10 @@
 # Normal build steps
 . build/envsetup.sh
-lunch aospa_lavender-userdebug
+# RBE
+. /tmp/ci/rbe
+export RBE_CXX_LINKS_EXEC_STRATEGY=local
+export RBE_METALAVA_EXEC_STRATEGY=local
+lunch lavender-userdebug
 
 build_gapps=0
 
@@ -109,11 +113,11 @@ python3 $bin/img2sdat.py system_ext.img -o /tmp/ci/nex -v 4 -p system_ext && rm 
 convert_br () {
 tg "- Repack *.dat.br"
 ls /tmp/ci/nex
-brotli -3 -jv system.new.dat -o system.new.dat.br
-brotli -3 -jv vendor.new.dat -o vendor.new.dat.br
-brotli -3 -jv product.new.dat -o product.new.dat.br
-brotli -3 -jv odm.new.dat -o odm.new.dat.br
-brotli -3 -jv system_ext.new.dat -o system_ext.new.dat.br
+brotli -6 -jv system.new.dat -o system.new.dat.br
+brotli -6 -jv vendor.new.dat -o vendor.new.dat.br
+brotli -6 -jv product.new.dat -o product.new.dat.br
+brotli -6 -jv odm.new.dat -o odm.new.dat.br
+brotli -6 -jv system_ext.new.dat -o system_ext.new.dat.br
 }
 
 final_zip () {
@@ -127,14 +131,14 @@ upload *.zip && exit 0
 
 compile_plox () {
 # part 1
-get_system_ext
-get_product
-get_system
+#get_system_ext
+#get_product
+#get_system
 get_vendor
-get_odm
+#get_odm
 get_boot
 # part2 (choose manual zip or bacon if its not in parts)
-final_zip
+#final_zip
 #m bacon -j16
 #./r* lavender -t user -j8
 }

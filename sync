@@ -32,7 +32,7 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/AOSPA/manifest -b vauxite --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/CLO-Ext/manifest -b bka --git-lfs -g default,-mips,-darwin,-notdefault
 #git clone https://github.com/ImSpiDy/manifest.git --depth 1 -b vauxite .repo/local_manifests
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
@@ -42,20 +42,19 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 #curl https://github.com/VoltageOS/hardware_google_pixel/commit/5723b06faf36c6a2c7c27a35ac43e30e51d8eb23.patch | git -C hardware/google/pixel am
 
 # tree
-git clone --depth=1 https://github.com/ArrowOS/android_external_tinyxml external/tinyxml
-if [ $K19 == 1 ]; then
-git clone --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/msm-4.19  -b vauxite
-mv -f kernel/msm-4.19/Androidbp kernel/msm-4.19/Android.bp
-mv -f kernel/msm-4.19/techpack/audio/Androidbp kernel/msm-4.19/techpack/audio/Android.bp
-else
-git clone --depth=1 https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-qti
-git clone --depth=1 https://github.com/wHo-EM-i/vendor_xiaomi_sdm660-common-4.4 vendor/xiaomi/sdm660-common-4.4 -b 14
-fi
-git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b vauxite
-git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b vauxite
+#git clone --depth=1 https://github.com/ArrowOS/android_external_tinyxml external/tinyxml
 
-git clone --depth=1 https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b uvite
-git clone --depth=1 https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b vauxite
+git clone --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/msm-4.19  -b scar
+#mv -f kernel/msm-4.19/Androidbp kernel/msm-4.19/Android.bp
+#mv -f kernel/msm-4.19/techpack/audio/Androidbp kernel/msm-4.19/techpack/audio/Android.bp
+
+git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 16-CLO
+git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 16-CLO-Rebase
+
+git clone --depth=1 https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 16-CLO
+git clone --depth=1 https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 16-CLO
+
+git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 
 #rm -rf hardware/xiaomi
 #git clone --depth=1 https://github.com/arrowos-devices/android_hardware_xiaomi hardware/xiaomi -b arrow-13.1
@@ -66,30 +65,27 @@ git clone --depth=1 https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendo
 #rm -rf device/xiaomi/lavender/libhidl
 #rm -rf hardware/xiaomi/megvii/*.bp
 
-rm -rf device/qcom/common/sepolicy/pixel/vendor/flipendo.te
+#rm -rf device/qcom/common/sepolicy/pixel/vendor/flipendo.te
 
 # patch
 #rm -rf /tmp/rom/bionic
 #git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
 
 # clang
-git clone --depth=1 https://gitlab.com/Project-Nexus/nexus-clang prebuilts/clang-standalone -b nexus-14
+#git clone --depth=1 https://gitlab.com/Project-Nexus/nexus-clang prebuilts/clang-standalone -b nexus-14
 
 # Hals
-if [ $K19 == 1 ]; then
-rm -rf vendor/qcom/opensource/audio-hal/primary-hal hardware/qcom/display hardware/qcom/media
-git clone --depth=1 https://github.com/Nub-XD/android_hardware_qcom_audio vendor/qcom/opensource/audio-hal/primary-hal -b uvite
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom/display -b vauxite
-git clone --depth=1 https://github.com/Nub-XD/android_hardware_qcom_media hardware/qcom/media -b uvite
-#git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b sdm660-12.2.1.r1
-else
-sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' hardware/qcom-caf/common/*Qcom.mk
-rm -rf hardware/qcom-caf/msm8998
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/msm8998/audio -b 8998-4.4
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/msm8998/display -b 8998-4.4
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/msm8998/media -b 8998-4.4
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/msm8998/camera -b sdm660-12.2.1.r1
-fi
+sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' device/qcom/common/common.mk
+rm -rf hardware/qcom-caf/sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 16-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 16-clo-sm8150
+git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 16-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b 16-caf-sdm660
+
+# neo 
+git clone https://github.com/LineageOS/android_hardware_qcom_audio/ hardware/qcom-caf/msm8953/audio -b lineage-22.2-caf-msm8953
+echo "soong_namespace {
+}" > hardware/qcom-caf/msm8953/audio/Android.bp
 
 #git clone --depth=1 https://github.com/pix106/android_hardware_qcom-caf_camera hardware/qcom-caf/sdm660/camera -b sdm660-4.19-11.2.1.r1-lavender
 
@@ -104,7 +100,8 @@ fi
 #curl https://github.com/wHo-EM-i/build_soong/commit/00e17b67081c0f2f3558f6fd33e034fd504b209b.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/56fdbc1cf940dbd37bbb6eae51b61acd888ecfd3.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/77af04630dad56b85d55f49c5cdd69a0aff7e6b0.patch | git -C build/soong am
-curl https://github.com/VoltageOS-staging/build_soong/commit/cf37cb71e31d74d219381a4f685c9a7389139d4d.patch | git -C build/soong am
+
+#curl https://github.com/VoltageOS-staging/build_soong/commit/cf37cb71e31d74d219381a4f685c9a7389139d4d.patch | git -C build/soong am
 
 
 # keys

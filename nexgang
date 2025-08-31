@@ -91,7 +91,6 @@ git clone https://github.com/akhilnarang/scripts.git /tmp/scripts \
 && sudo bash /tmp/scripts/setup/android_build_env.sh \
 && rm -rf /tmp/scripts
 
-RUN echo 'sudo fallocate -l 16G /tmp/swapfile && sudo chmod 600 /tmp/swapfile && sudo mkswap /tmp/swapfile && sudo swapon /tmp/swapfile && free -h'  > /etc/profile.d/welcome.sh
 CMD ["/usr/sbin/sshd", "-D"]
 
 # Run bash
