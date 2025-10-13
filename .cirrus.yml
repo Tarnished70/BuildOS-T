@@ -16,4 +16,4 @@ task:
     run_script:
       - git clone --depth=1 --single-branch https://${GH_TOKEN}@github.com/reaPeR1010/kernel_4.14 -b newtest x
       - cd x
-      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/3f8fb2febf704ee505a80bdda801285d/raw/d74a0785e2925ccd6f7b642a40a0171c5e74adb3/lav.sh | bash
+      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/3f8fb2febf704ee505a80bdda801285d/raw/ebb40c8347ad150902778476166a229a858aca27/lav.sh | bash
