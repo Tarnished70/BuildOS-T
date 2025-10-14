@@ -32,7 +32,7 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/crdroid-security/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/crdroid11/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
@@ -79,7 +79,7 @@ sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' ven
 if [ $K19 == 1 ]; then
 #sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 11-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 11-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 11-8.2.1
 git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 11-caf-sm8150
 else
 #sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' vendor/*/config/B*Qcom.mk
@@ -134,6 +134,9 @@ rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/J
 #git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
 # disable gms spoof overlay
 #git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
+
+# Settings (maintainer patch)
+curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
 
 # Clang
 git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
