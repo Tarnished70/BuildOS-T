@@ -9,7 +9,7 @@ export RBE_CXX_LINKS_EXEC_STRATEGY=local
 #export RBE_LOG_LEVEL=debug
 #export USE_CCACHE=0
 env | grep RBE
-lunch lineage_lavender-userdebug
+lunch lineage_miatoll-userdebug
 
 build_gapps=0
 
@@ -38,9 +38,7 @@ if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
 push_log
 tg "- Push your fix asap...!"
 sleep 5m
-git -C device/xiaomi/sdm660-common pull -r
-git -C device/xiaomi/lavender pull -r
-git -C hardware/qcom-caf/sdm660/camera pull -r
+git -C device/xiaomi/sm6250-common pull -r
 #repo sync android_bionic
 make bacon -j16
 fi
@@ -48,9 +46,7 @@ if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
 push_log
 tg "- Push your fix asap...!"
 sleep 5m
-git -C device/xiaomi/sdm660-common pull -r
-git -C device/xiaomi/lavender pull -r
-git -C hardware/qcom-caf/sdm660/camera pull -r
+git -C device/xiaomi/sm6250-common pull -r
 repo sync android_bionic
 make bacon -j16
 fi

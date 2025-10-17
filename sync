@@ -37,30 +37,18 @@ repo init --depth=1 --no-repo-verify -u https://github.com/crdroid11/android.git
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
-# tree
-if [ $K19 == 1 ]; then
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b scar
-cd kernel/xiaomi/sdm660
-#echo "Adding CONFIG_QCA_CLD_WLAN_LEGACY=y"
-#echo "CONFIG_QCA_CLD_WLAN_LEGACY=y" >> arch/arm64/configs/lavender_defconfig
-echo "Dropping RDP"
-echo "# CONFIG_INITRAMFS_IGNORE_SKIP_FLAG is not set" >> arch/arm64/configs/lavender_defconfig
-git apply snx/drop_rdp.p
-#bash ksu.sh
-#echo "CONFIG_KSU=y" >> arch/arm64/configs/lavender_defconfig
-#echo "CONFIG_OVERLAY_FS=y" >> arch/arm64/configs/lavender_defconfig
-cd /tmp/rom
-else
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-qti
-git -C kernel/xiaomi/sdm660 apply QTI_HAPTICS.p
-fi
-git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 11
-git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 11
+# KT
+git clone --depth=1 --single-branch https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sm6250 -b main
+# DT
+git clone --depth=1 https://github.com/LineageOS/android_device_xiaomi_miatoll device/xiaomi/miatoll -b lineage-18.1
+git clone --depth=1 https://github.com/reaPeR1010/android_device_xiaomi_sm6250-common device/xiaomi/sm6250-common -b lineage-18.1
+# VT
+git clone --depth=1 --single-branch https://gitlab.com/the-muppets/proprietary_vendor_xiaomi vendor/xiaomi -b lineage-18.1
 
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
+# fix conlfict with official dt
+rm -rf device/xiaomi/*/lineage.dependencies
 
-git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
+#git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-18.1
 rm -rf hardware/xiaomi/megvii
 
@@ -73,31 +61,15 @@ rm -rf hardware/xiaomi/megvii
 #rm -rf /tmp/rom/bionic
 #git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
 
-# Hals
-rm -rf hardware/qcom-caf/sdm660
-sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
-if [ $K19 == 1 ]; then
-#sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 11-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 11-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 11-caf-sm8150
-else
-#sed -i 's|QCOM_HARDWARE_VARIANT := sdm660|QCOM_HARDWARE_VARIANT := msm8998|' vendor/*/config/B*Qcom.mk
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b sdm660-4.4
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b sdm660-4.4
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 11-9.2.r1
-fi
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b sdm660-9.2.r1
-
 # keys
 #git clone --depth=1 https://github.com/Los-Ext/vendor_lineage-priv_keys vendor/lineage-priv/keys
 git clone https://github.com/Nub-XD/vendor_lavender-priv_keys vendor/lineage-priv/keys
 echo "-include vendor/lineage-priv/keys/keys.mk" >> vendor/*/config/common.mk
 
 #patch
-rm -rf device/qcom/sepolicy-legacy-um
-git clone https://github.com/raiyanbinmohsin/device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um
-git -C device/qcom/sepolicy-legacy-um revert -n b63cd988f7e7df3d54a97285f354476760edf7ae
+#rm -rf device/qcom/sepolicy-legacy-um
+#git clone https://github.com/raiyanbinmohsin/device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um
+#git -C device/qcom/sepolicy-legacy-um revert -n b63cd988f7e7df3d54a97285f354476760edf7ae
 
 # build/soong
 curl https://github.com/wHo-EM-i/build_soong/commit/42df79cee0b1eec108a71affcf3ae841613b9a0c.patch | git -C build/soong am
@@ -154,15 +126,5 @@ Time Took: $(($SECONDS / 60)) minute(s) and $(($SECONDS % 60)) second(s).
 Status: $progress"
 
 echo "$(($SECONDS / 60))" > /tmp/sync_time.txt
-
-
-#check_build_type
-#case "$build_type" in
-#		 C|c)
-#		 tg "Skipping OUT Download on Clean build"
-#		 ;; # else
-#		 *)
-#		 #dload_out
-#esac
 
 neofetch
