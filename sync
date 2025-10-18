@@ -45,6 +45,9 @@ git clone --depth=1 https://github.com/reaPeR1010/android_device_xiaomi_sm6250-c
 # VT
 git clone --depth=1 --single-branch https://gitlab.com/the-muppets/proprietary_vendor_xiaomi vendor/xiaomi -b lineage-18.1
 
+# common extra dt
+git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_common device/xiaomi/common -b 11
+
 # fix conlfict with official dt
 rm -rf device/xiaomi/*/lineage.dependencies
 
@@ -106,6 +109,9 @@ rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/J
 #git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
 # disable gms spoof overlay
 #git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
+
+# Settings (maintainer patch)
+curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
 
 # Clang
 git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
