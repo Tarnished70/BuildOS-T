@@ -39,14 +39,9 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 # tree
 
 if [ $K19 == 1 ]; then
-#git clone --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 && git -C kernel/xiaomi/sdm660 revert --no-edit 4cbc441be5366fdc5e7cc09c989df617c9c162d0
-git clone --single-branch https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b scar
+git clone --single-branch --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b scar
 git -C kernel/xiaomi/sdm660 apply snx/old-rdp.p
-# bpf patch & 5.4 spoof
-git -C kernel/xiaomi/sdm660 fetch https://github.com/ImSpiDy/sonix_kernel_sdm660 -t 16
-git -C kernel/xiaomi/sdm660 cherry-pick deebc6f5a617ddee3d864e9fd5a50874ac88df3a^..5ca0a5654cc04dff404d63a062aba0a2dfaba4d7
-#test hevc-10bit fix
-#curl https://github.com/Atom-X-Devs/scarlet_xiaomi_sdm660/commit/572d01152a3ad83fc401c1af19adbdf39fe8a7e1.patch | git -C kernel/xiaomi/sdm660 am
+#git clone --single-branch --depth=1 https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sdm660 -b newtest
 else
 git clone --depth=1 https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-rdp
 fi
@@ -109,7 +104,7 @@ curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/09d98ff84e42287ab56
 rm -rf hardware/qcom-caf/sdm660/audio hardware/qcom-caf/sdm660/media
 rm -rf hardware/qcom-caf/sdm660/display
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 13-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 13-caf-sdm660
+git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 8.2.1
 #mine
 git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 13-caf-sm8150
 #pix106

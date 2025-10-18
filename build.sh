@@ -169,8 +169,8 @@ compile_plox () {
 get_vendor
 # fking ksu errors
 #ls out/target/product/lavender/vendor.img || get_vendor
-get_odm
-get_boot
+#get_odm
+ls out/target/product/lavender/boot.img || get_boot
 final_zip
 #m productimage
 #m systemextimage
@@ -189,7 +189,7 @@ tg "- Push your fix asap...!"
 sleep 5m
 git -C device/xiaomi/sdm660-common pull -r
 git -C device/xiaomi/lavender pull -r
-git -C hardware/qcom-caf/sdm660/camera pull -r
+git -C hardware/qcom-caf/sdm660/media pull -r
 #repo sync android_bionic
 make bacon -j16
 fi
@@ -200,7 +200,7 @@ tg "- Push your fix asap...!"
 sleep 5m
 git -C device/xiaomi/sdm660-common pull -r
 git -C device/xiaomi/lavender pull -r
-git -C hardware/qcom-caf/sdm660/camera pull -r
+git -C hardware/qcom-caf/sdm660/media pull -r
 #repo sync android_bionic
 make bacon -j16
 fi
