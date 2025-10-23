@@ -17,6 +17,6 @@ task:
       memory: 32G
       greedy: true
     run_script:
-      - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/ImSpiDy/kernel_xiaomi_haydn -b R1 /tmp/kernel
+      - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/ImSpiDy/kernel_xiaomi_haydn -b R4 /tmp/kernel
       - cd /tmp/kernel
       - bash build.sh
