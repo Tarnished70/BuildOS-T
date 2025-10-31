@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote  name="ext"
+           fetch="https://github.com/JunkYard-XD"
+           revision="refs/heads/11.0" />
+  <remote  name="rtr"
+           fetch="https://github.com/reaPeR1010" />
+
+  <!-- Remove yaap repo -->
+  <remove-project path="frameworks/base" />
+  <remove-project path="frameworks/native" />
+  <remove-project path="vendor/lineage" />
+
+  <!-- Ext additions -->
+  <project path="frameworks/base" name="android_frameworks_base" remote="ext" clone-depth="1" />
+  <project path="frameworks/native" name="android_frameworks_native" remote="ext" clone-depth="1" />
+  <project path="vendor/lineage" name="android_vendor" remote="ext" clone-depth="1" />
+  
+  <!-- Tree -->
+  <project path="kernel/xiaomi/sm6250" name="kernel_4.14" remote="rtr" revision="main" clone-depth="1" />
+  <project path="vendor/xiaomi/miatoll" name="android_vendor_xiaomi_miatoll" remote="rtr" revision="lineage-18.1" clone-depth="1" />
+  <project path="vendor/xiaomi/sm6250-common" name="android_vendor_xiaomi_sm6250-common" remote="rtr" revision="lineage-18.1" clone-depth="1" />
+
+</manifest>

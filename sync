@@ -25,6 +25,10 @@ bash ~/git_cookies.sh
 
 fi
 
+# ubuntu 24 fix
+#wget https://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2_amd64.deb && sudo dpkg -i libtinfo5_6.3-2_amd64.deb && rm -f libtinfo5_6.3-2_amd64.deb
+#wget https://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.3-2_amd64.deb && sudo dpkg -i libncurses5_6.3-2_amd64.deb && rm -f libncurses5_6.3-2_amd64.deb
+
 git config --global user.name "ImSpiDy"
 echo "switching account" 
 gh config set -h github.com
@@ -34,26 +38,34 @@ git config --global credential.helper '!gh auth git-credential'
 # Sync source
 repo init --depth=1 --no-repo-verify -u https://github.com/crdroid11/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
 
+# local_mnf
+mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_manifests
+
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
 # KT
-git clone --depth=1 --single-branch https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sm6250 -b main
+#git clone --depth=1 --single-branch https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sm6250 -b main
 # DT
-git clone --depth=1 https://github.com/LineageOS/android_device_xiaomi_miatoll device/xiaomi/miatoll -b lineage-18.1
+git clone --depth=1 https://github.com/reaPeR1010/android_device_xiaomi_miatoll device/xiaomi/miatoll -b lineage-18.1
 git clone --depth=1 https://github.com/reaPeR1010/android_device_xiaomi_sm6250-common device/xiaomi/sm6250-common -b lineage-18.1
-# VT
-git clone --depth=1 --single-branch https://gitlab.com/the-muppets/proprietary_vendor_xiaomi vendor/xiaomi -b lineage-18.1
+# VT (gitlab)
+#git clone --depth=1 --single-branch https://gitlab.com/the-muppets/proprietary_vendor_xiaomi vendor/xiaomi -b lineage-18.1
+#git clone --depth=1 --single-branch https://github.com/reaPeR1010/android_vendor_xiaomi_miatoll vendor/xiaomi/miatoll -b lineage-18.1
+#git clone --depth=1 --single-branch https://github.com/reaPeR1010/android_vendor_xiaomi_sm6250-common vendor/xiaomi/sm6250-common -b lineage-18.1
 
 # common extra dt
 git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_common device/xiaomi/common -b 11
 
 # fix conlfict with official dt
-rm -rf device/xiaomi/*/lineage.dependencies
+#rm -rf device/xiaomi/*/lineage.dependencies
 
 #git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-18.1
 rm -rf hardware/xiaomi/megvii
+
+# sony timekeep
+git clone --depth=1 --single-branch https://github.com/LineageOS/android_hardware_sony_timekeep hardware/sony/timekeep -b lineage-18.1
 
 #rm -rf device/qcom/sepolicy-legacy-um
 #git clone --depth=1 https://github.com/ArrowOS/android_device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um -b arrow-13.1
@@ -97,8 +109,8 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 
 # hax
 # fwb
-#curl https://github.com/xdCLO-Enhanced/xd_frameworks_base/commit/efb19839c2215e4d087d9286b76c73c8ae15c701.patch | git -C frameworks/base am
-rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
+#rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
+# paritail cp
 #git -C frameworks/base fetch https://github.com/JunkYard-XD/android_frameworks_base -t 11.0
 #git -C frameworks/base cherry-pick d8be6329bcdfc9f384a350d04008f7e6853512eb^..3b6a25be3ad541488105bea9d7acdefae23f88e1
 # PPU (prop based impl)
@@ -106,15 +118,25 @@ rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/J
 # BL Lock spoof
 #git -C frameworks/base cherry-pick 07651054fe4bd97922d8ff80e97f2ff85c19115b
 
+# cr_vendor fork
 #git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
+#git -C vendor/lineage cherry-pick 04ae0b200160d4bd14119fe310f2a3eef3caf062^..b1eb90a0e4c7c4e34794f3871151ee26ac17c33e
 # disable gms spoof overlay
 #git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
+
+# dotprod
+curl https://github.com/crdroidandroid/android_build/commit/b817bb161d76e9537168d8af42cd9dbacb20d410.patch | git -C build/make am
 
 # Settings (maintainer patch)
 curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
 
 # Clang
-git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
+#git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
+
+mkdir -p prebuilts/clang/host/linux-x86/custom-clang
+#aria2c https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/mirror-goog-main-prebuilts/clang-r574158.tar.gz -x16 -s50
+aria2c https://github.com/reaPeR1010/AiO/releases/download/clang-r574158/clang-r574158.tar.gz -x16 -s50
+tar -xzf clang-*.tar.gz -C /tmp/rom/prebuilts/clang/host/linux-x86/custom-clang && rm -rf clang-*.tar.gz
 
 # qti powerhal
 #rm -rf /tmp/rom/vendor/qcom/opensource/power
@@ -133,4 +155,3 @@ Status: $progress"
 
 echo "$(($SECONDS / 60))" > /tmp/sync_time.txt
 
-neofetch
