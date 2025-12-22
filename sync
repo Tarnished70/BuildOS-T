@@ -34,8 +34,15 @@ git config --global credential.helper '!gh auth git-credential'
 # Sync source
 repo init --depth=1 --no-repo-verify -u https://github.com/crdroid11/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
 
+# local_mnf
+mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_manifests
+
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
+
+#crdeoid11 fuckers
+curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
+curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
 
 # tree
 if [ $K19 == 1 ]; then
@@ -57,8 +64,8 @@ fi
 git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 11
 git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 11
 
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
+#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
+#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
 
 git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 git clone https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi -b lineage-18.1
@@ -74,7 +81,7 @@ rm -rf hardware/xiaomi/megvii
 #git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
 
 # Hals
-rm -rf hardware/qcom-caf/sdm660
+rm -rf hardware/qcom-caf/sdm660/audio hardware/qcom-caf/sdm660/media hardware/qcom-caf/sdm660/display
 sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
 if [ $K19 == 1 ]; then
 #sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' vendor/*/config/B*Qcom.mk
@@ -123,7 +130,7 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 # hax
 # fwb
 #curl https://github.com/xdCLO-Enhanced/xd_frameworks_base/commit/efb19839c2215e4d087d9286b76c73c8ae15c701.patch | git -C frameworks/base am
-rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
+#rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/JunkYard-XD/android_frameworks_base frameworks/base -b 11.0
 #git -C frameworks/base fetch https://github.com/JunkYard-XD/android_frameworks_base -t 11.0
 #git -C frameworks/base cherry-pick d8be6329bcdfc9f384a350d04008f7e6853512eb^..3b6a25be3ad541488105bea9d7acdefae23f88e1
 # PPU (prop based impl)
@@ -139,33 +146,22 @@ rm -rf frameworks/base; git clone --single-branch --depth=1 https://github.com/J
 curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
 
 # Clang
-git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
+#git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
+
+#mkdir -p prebuilts/clang/host/linux-x86/custom-clang
+#curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/mirror-goog-main-prebuilts/clang-r574158.tar.gz -o /tmp/rom/clang-r574158.tar.gz
+#aria2c https://github.com/JunkYard-XD/roms-cache/releases/download/Test/clang-r574158.tar.gz -x16 -s50
+#tar -xzf clang-*.tar.gz -C /tmp/rom/prebuilts/clang/host/linux-x86/custom-clang && rm -rf clang-*.tar.gz
 
 # qti powerhal
 #rm -rf /tmp/rom/vendor/qcom/opensource/power
 #git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 11.0
 
-git config --global user.name "$CIRRUS_REPO_OWNER"
-echo "switching account" && gh auth logout
-login_main # main id
-gh config set -h github.com
-
 . /tmp/ci/function
 tg "$rom_name source sync completed!
 Total Size: $(du -sh /tmp/rom | cut -d - -f 1 | cut -d / -f 1)
-Time Took: $(($SECONDS / 60)) minute(s) and $(($SECONDS % 60)) second(s).
+Time Took: $(($SECONDS / 60)) minute and $(($SECONDS % 60)) second.
 Status: $progress"
 
 echo "$(($SECONDS / 60))" > /tmp/sync_time.txt
 
-
-#check_build_type
-#case "$build_type" in
-#		 C|c)
-#		 tg "Skipping OUT Download on Clean build"
-#		 ;; # else
-#		 *)
-#		 #dload_out
-#esac
-
-neofetch

@@ -1,5 +1,5 @@
 # Base Image: Ubuntu
-FROM ubuntu:22.04
+FROM ubuntu:latest
 
 # Working Directory
 WORKDIR /tmp
@@ -38,41 +38,12 @@ RUN \
 &&  git config --global user.email $GIT_EMAIL
 
 # Filesystems
-RUN sudo apt-get install -y \
-    erofs-utils \
-    lld \
-    git-lfs \
-    p7zip \
-    pigz \
-    ccache \
-    zram-config \
-    jq \
-    aria2 \
-    gh \
-    unzip \
-    nano \
-    neofetch \
-    git-core \
-    gnupg \
-    flex \
-    bison \
-    build-essential \
-    zip \
-    curl \
-    wget \
-    tar \
-    zlib1g-dev \
-    libc6-dev-i386 \
-    libncurses5 \
-    x11proto-core-dev \
-    libx11-dev \
-    lib32z1-dev \
-    libgl1-mesa-dev \
-    libxml2-utils \
-    xsltproc \
-    fontconfig \ 
-    python3 \
-    python3-pip && \
+RUN sudo apt-get install -y --no-install-recommends \
+    locales apt-utils tzdata wget software-properties-common \
+    bash bc binutils-dev bison build-essential ca-certificates cmake cpio curl default-jre \
+    file flex g++ gcc gh git git-lfs libelf-dev libncurses5-dev libssl-dev \
+    libxml2 lz4 make nano ninja-build python3 python3-dev python3-pip texinfo u-boot-tools \
+    xz-utils zlib1g-dev zip unzip p7zip pigz zstd openssh-client aria2 jq ccache rsync && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 RUN mkdir /var/run/sshd
@@ -89,8 +60,13 @@ git clone https://github.com/akhilnarang/scripts.git /tmp/scripts \
 && sudo bash /tmp/scripts/setup/android_build_env.sh \
 && rm -rf /tmp/scripts
 
-RUN echo 'sudo fallocate -l 16G /tmp/swapfile && sudo chmod 600 /tmp/swapfile && sudo mkswap /tmp/swapfile && sudo swapon /tmp/swapfile && free -h'  > /etc/profile.d/welcome.sh
-CMD ["/usr/sbin/sshd", "-D"]
+RUN \
+wget https://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2_amd64.deb && sudo dpkg -i libtinfo5_6.3-2_amd64.deb && rm -f libtinfo5_6.3-2_amd64.deb \
+&& wget https://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.3-2_amd64.deb && sudo dpkg -i libncurses5_6.3-2_amd64.deb && rm -f libncurses5_6.3-2_amd64.deb
+
+# Final cleanup to reduce image size
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/* /usr/share/info/* /tmp/*
 
 # Run bash
 CMD ["bash"]

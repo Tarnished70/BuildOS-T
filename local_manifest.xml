@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote  name="ext"
+           fetch="https://github.com/JunkYard-XD"
+           revision="refs/heads/11.0" />
+  <remote  name="rtr"
+           fetch="https://github.com/reaPeR1010" />
+  <remote  name="spidy"
+           fetch="https://github.com/ImSpiDy" />
+  <remote  name="nexus"
+           fetch="https://gitlab.com/Project-Nexus" />
+
+  <!-- Remove yaap repo -->
+  <!--
+  <remove-project path="vendor/lineage" />
+  -->
+  <remove-project path="frameworks/base" />
+  <remove-project path="frameworks/native" />
+
+  <!-- Ext additions -->
+  <!--
+  <project path="vendor/lineage" name="android_vendor" remote="ext" clone-depth="1" />
+  -->
+  <project path="frameworks/base" name="android_frameworks_base" remote="ext" clone-depth="1" />
+  <project path="frameworks/native" name="android_frameworks_native" remote="ext" clone-depth="1" />
+  
+  <!-- Tree -->
+  <!--
+  <project path="kernel/xiaomi/sdm660" name="sonix_kernel_sdm660" remote="spidy" revision="scar" clone-depth="1" />
+  -->
+  <project path="prebuilts/clang/host/linux-x86/custom-clang" name="nexus-clang" remote="nexus" revision="nexus-14" clone-depth="1" />
+  <project path="vendor/xiaomi/lavender" name="vendor_lavender" remote="spidy" revision="11" clone-depth="1" />
+  <project path="vendor/xiaomi/sdm660-common" name="vendor_xiaomi_sdm660-common" remote="spidy" revision="11" clone-depth="1" />
+
+</manifest>
