@@ -15,5 +15,6 @@ task:
       memory: 32G
       greedy: true
     run_script:
+      - gh_token="$my_og_token"
       - mkdir dump && cd dump
       - bash <(curl -s https://raw.githubusercontent.com/ImSpiDy/Scripts/main/dump.sh) https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/V11.0.6.0.PFGMIXM/miui_LAVENDERGlobal_V11.0.6.0.PFGMIXM_48d41b4dee_9.0.zip --up
