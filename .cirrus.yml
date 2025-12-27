@@ -4,6 +4,7 @@ env: # Environment variables to pass to all tasks
 
 # store our secrets here
     my_og_token: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
+    gh_token: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
     REAL_REPO_OWNER: "ENCRYPTED[0276990e26d93085fb08a543241e40cf2b8034b53b6b8b3061c72dbfeb337ebc9457b3343a5c69be82f0f9cb3f48c0b5]" # main id
 
 task:
@@ -15,6 +16,5 @@ task:
       memory: 32G
       greedy: true
     run_script:
-      - gh_token="$my_og_token"
       - mkdir dump && cd dump
       - bash <(curl -s https://raw.githubusercontent.com/ImSpiDy/Scripts/main/dump.sh) https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/V11.0.6.0.PFGMIXM/miui_LAVENDERGlobal_V11.0.6.0.PFGMIXM_48d41b4dee_9.0.zip --up
