@@ -10,7 +10,7 @@ task:
     name: kernel
     timeout_in: 120m
     container:
-      image: aarunalr/aosp-build
+      image: panchajanya1999/archlinux:latest
       cpu: 8
       memory: 32G
       greedy: true
