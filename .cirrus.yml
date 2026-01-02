@@ -10,7 +10,7 @@ task:
     name: kernel
     timeout_in: 120m
     container:
-      image: nexgang/ubuntu@sha256:684d1d022de9afd1a8543cc0aadeaa025161e843b452f1377a1e3c17d1b5d639
+      image: nexgang/ubuntu:latest
       cpu: 8
       memory: 32G
       greedy: true
