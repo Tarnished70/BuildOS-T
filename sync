@@ -33,6 +33,9 @@ git config --global credential.helper '!gh auth git-credential'
 # Sync source
 repo init --depth=1 --no-repo-verify -u https://github.com/JunkYard-XD/manifest -b vos13 --git-lfs -g default,-mips,-darwin,-notdefault
 
+# local_mnf
+mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_manifests
+
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
 
@@ -52,8 +55,8 @@ git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_lavender device/xia
 
 git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 13
 
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 13
-git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 13
+#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 13
+#git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 13
 #git clone --depth=1 --single-branch https://github.com/wHo-EM-i/vendor_xiaomi_sdm660-common-4.4 vendor/xiaomi/sdm660-common-4.4 -b 13
 
 rm -rf hardware/xiaomi
@@ -129,5 +132,3 @@ Time Took: $(($SECONDS / 60)) minute(s) and $(($SECONDS % 60)) second(s).
 Status: $progress"
 
 echo "$(($SECONDS / 60))" > /tmp/sync_time.txt
-
-neofetch
