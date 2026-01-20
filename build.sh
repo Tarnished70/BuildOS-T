@@ -3,9 +3,12 @@
 . build/envsetup.sh
 # RBE
 . /tmp/ci/rbe
-export RBE_CXX_LINKS_EXEC_STRATEGY=local
-export RBE_METALAVA_EXEC_STRATEGY=local
+#export RBE_METALAVA_EXEC_STRATEGY=local
 export RBE_LOG_LEVEL=debug
+#export JAVA_OPTS="-Xmx4g"
+#export ANDROID_JAVA_OPTIONS="-Xmx4g"
+#export _JAVA_OPTIONS="-Xmx4g"
+export NINJA_ARGS="-j12"
 #env | grep RBE
 lunch voltage_lavender-userdebug
 
@@ -13,14 +16,14 @@ build_gapps=0
 
 # export variable here
 export TZ=Asia/Kolkata
-#export SELINUX_IGNORE_NEVERALLOWS=true
+export SELINUX_IGNORE_NEVERALLOWS=true
 export RELAX_USES_LIBRARY_CHECK=true
 if [ $K19 == 1 ]; then
 export TARGET_KERNEL_VERSION=4.19
 elif [ $K19 == 0 ]; then
 export TARGET_KERNEL_VERSION=4.4
 fi
-export PRODUCT_DEFAULT_DEV_CERTIFICATE=vendor/lineage-priv/keys/releasekey
+#export PRODUCT_DEFAULT_DEV_CERTIFICATE=vendor/lineage-priv/keys/releasekey
 export WITH_GMS=false
 
 exp_gapps () {
@@ -166,16 +169,16 @@ compile_plox () {
 #get_product
 #get_system_ext
 #get_system
-get_vendor
+#get_vendor
 # fking ksu errors
 #ls out/target/product/lavender/vendor.img || get_vendor
 #get_odm
-ls out/target/product/lavender/boot.img || get_boot
-final_zip
+#ls out/target/product/lavender/boot.img || get_boot
+#final_zip
 #m productimage
 #m systemextimage
 #m systemimage
-#m bacon #-j16
+m bacon -j80
 
 # KSU bc -_-
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ] && [ $(cat /tmp/rom/out/error.log | grep -o -e 'KernelSU' -e 'FAILED: ' | head -n 1) ]; then
