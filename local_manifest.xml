@@ -3,19 +3,29 @@
 
   <remote  name="ext"
            fetch="https://github.com/JunkYard-XD"
-           revision="refs/heads/11.0" />
+           revision="refs/heads/13" />
   <remote  name="ImSpiDy"
            fetch="https://github.com/ImSpiDy" />
 
-  <!-- Remove yaap repo 
+  <!-- Remove yaap repo -->
+  <remove-project path="bionic" />
   <remove-project path="frameworks/base" />
   <remove-project path="frameworks/native" />
-  <remove-project path="vendor/lineage" />-->
+  <remove-project path="build/make" />
 
-  <!-- Ext additions 
-  <project path="frameworks/base" name="android_frameworks_base" remote="ext" clone-depth="1" />
-  <project path="frameworks/native" name="android_frameworks_native" remote="ext" clone-depth="1" />
-  <project path="vendor/lineage" name="android_vendor" remote="ext" clone-depth="1" />-->
+  <!-- Ext additions -->
+  <project path="bionic" name="android_bionic" remote="ext" revision="derp" clone-depth="1" />
+  <project path="frameworks/base" name="frameworks_base-13" remote="ext" revision="derp" clone-depth="1" />
+  <project path="frameworks/native" name="frameworks_native-13" remote="ext" revision="13" clone-depth="1" />
+    <project path="build/make" name="build-13" groups="pdk" remote="ext" >
+    <copyfile src="core/root.mk" dest="Makefile" />
+    <linkfile src="CleanSpec.mk" dest="build/CleanSpec.mk" />
+    <linkfile src="buildspec.mk.default" dest="build/buildspec.mk.default" />
+    <linkfile src="core" dest="build/core" />
+    <linkfile src="envsetup.sh" dest="build/envsetup.sh" />
+    <linkfile src="target" dest="build/target" />
+    <linkfile src="tools" dest="build/tools" />
+  </project>
   
   <!-- Tree -->
   <project path="vendor/xiaomi/lavender" name="vendor_lavender" remote="ImSpiDy" revision="13" clone-depth="1" />

@@ -31,7 +31,7 @@ git config --global credential.helper '!gh auth git-credential'
 #exit 0
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/JunkYard-XD/manifest -b vos13 --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/DerpFest-AOSP/manifest -b 13 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # local_mnf
 mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_manifests
@@ -39,8 +39,10 @@ mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_mani
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
 
-# tree
+# cleanupPostRender
+grep -rl 'getRenderEngine().cleanupPostRender()' frameworks/native | xargs sed -i '/^[[:space:]]*\/\//! s/\(getRenderEngine().cleanupPostRender()\)/\/\/\1/'
 
+# tree
 if [ $K19 == 1 ]; then
 git clone --single-branch --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660 -b scar
 git -C kernel/xiaomi/sdm660 apply snx/old-rdp.p
@@ -67,31 +69,34 @@ rm -rf hardware/xiaomi/megvii/*.bp
 
 # patch
 # bionic
-rm -rf /tmp/rom/bionic && git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
+#rm -rf /tmp/rom/bionic && git clone --depth=1 https://github.com/wHo-EM-i/bionic -b vos13
 #curl https://github.com/wHo-EM-i/bionic/commit/585562aa03169194a2b0c32e72c752ff07a2c71d.patch | git -C bionic am
 
 # soong patch
-curl https://github.com/wHo-EM-i/build_soong/commit/d6ed01c1ff57ca44c43698edd81930e4cd86eb49.patch | git -C build/soong am
-curl https://github.com/wHo-EM-i/build_soong/commit/1b65ad830978e9e41b5bc38d82d4b306c36475dc.patch | git -C build/soong am
-curl https://github.com/wHo-EM-i/build_soong/commit/22be3e99bd352172e1c2986d2646deefc3499c37.patch | git -C build/soong am
-curl https://github.com/wHo-EM-i/build_soong/commit/778455b4efe9cbb8522fc00478e8d8fe76c01fb2.patch | git -C build/soong am
-curl https://github.com/wHo-EM-i/build_soong/commit/b2ab4a1fabf4b405ebc865a79f328c330578330c.patch | git -C build/soong am
+# r8 oom kill fix
+#curl https://github.com/wHo-EM-i/build_soong/commit/22be3e99bd352172e1c2986d2646deefc3499c37.patch | git -C build/soong am
+# disable zip compression 
+curl https://github.com/wHo-EM-i/build_soong/commit/623d99004975217d4762e221ea84c34d2c5f98e6.patch | git -C build/soong am
+# metalava soong kill fix
+#curl https://github.com/VoltageOS/build_soong/commit/09d9cde9c48cd7f35c89aada8a5c56c1ee407ea7.patch | git -C build/soong am
 
 # build_make
-curl https://github.com/VoltageOS/build/commit/765c1bfe16e78fe8aec256e507d4dc1445187f5e.patch | git -C build/make am
-curl https://github.com/wHo-EM-i/build/commit/530d84f56cd35cbf645aaf8574fc4df39799ea60.patch | git -C build/make am
+# brotli
+#curl https://github.com/VoltageOS/build/commit/765c1bfe16e78fe8aec256e507d4dc1445187f5e.patch | git -C build/make am
+# soong zip (multi threaded)
+#curl https://github.com/wHo-EM-i/build/commit/530d84f56cd35cbf645aaf8574fc4df39799ea60.patch | git -C build/make am
 #curl https://github.com/wHo-EM-i/build/commit/24116259c07fc438097d6fb168d380496d66f6a5.patch | git -C build/make am
 #curl https://github.com/wHo-EM-i/build/commit/920a20cca2cccdb1161ab7135a70835db0c5508d.patch | git -C build/make am
 
 # frameworks_native
-curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/dabdcc7ed7cb126f61f8f48602be62d7944b6eee.patch | git -C frameworks/native am
-curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/ee95d097a8686e37b14e80237b7299a3cca67a20.patch | git -C frameworks/native am
+#curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/dabdcc7ed7cb126f61f8f48602be62d7944b6eee.patch | git -C frameworks/native am
+#curl https://github.com/ArrowOS-Legacy/android_frameworks_native/commit/ee95d097a8686e37b14e80237b7299a3cca67a20.patch | git -C frameworks/native am
 
 # fwb
 #curl https://github.com/wHo-EM-i/android_frameworks_base/commit/d42ee32d3b4b82bf7e1275b7bdb1000cb7252061.patch | git -C frameworks/base am
 
 # vendor_voltage
-curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/09d98ff84e42287ab56fcd621aa1cf3d9933c2fe.patch | git -C vendor/voltage am
+#curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/09d98ff84e42287ab56fcd621aa1cf3d9933c2fe.patch | git -C vendor/voltage am
 #curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/80f9ec6fe8f1315597e5045bea5a9e8d919f3095.patch | git -C vendor/voltage am
 #curl https://github.com/wHo-EM-i/android_vendor_arrow/commit/f6c03239496818df327613f203f1cec9fa04c9db.patch | git -C vendor/voltage am
 

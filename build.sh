@@ -4,13 +4,19 @@
 # RBE
 . /tmp/ci/rbe
 #export RBE_METALAVA_EXEC_STRATEGY=local
+
+#export RBE_D8_EXEC_STRATEGY=local
+#export RBE_R8_EXEC_STRATEGY=remote
 export RBE_LOG_LEVEL=debug
-#export JAVA_OPTS="-Xmx4g"
-#export ANDROID_JAVA_OPTIONS="-Xmx4g"
-#export _JAVA_OPTIONS="-Xmx4g"
-export NINJA_ARGS="-j12"
+export JAVA_OPTS="-Xmx4g"
+export ANDROID_JAVA_OPTIONS="-Xmx4g"
+export _JAVA_OPTIONS="-Xmx4g"
+export RBE_local_resource_fraction=0.1
+#export NINJA_ARGS="-j80"
 #env | grep RBE
-lunch voltage_lavender-userdebug
+export USE_CCACHE=0
+lunch derp_lavender-userdebug
+export USE_CCACHE=0
 
 build_gapps=0
 
@@ -23,8 +29,7 @@ export TARGET_KERNEL_VERSION=4.19
 elif [ $K19 == 0 ]; then
 export TARGET_KERNEL_VERSION=4.4
 fi
-#export PRODUCT_DEFAULT_DEV_CERTIFICATE=vendor/lineage-priv/keys/releasekey
-export WITH_GMS=false
+export WITH_GMS=true
 
 exp_gapps () {
 export USE_GAPPS=false
@@ -32,69 +37,85 @@ export USE_GAPPS=false
 
 login_main
 
+upload_backup () {
+# git upload
+gh release create $rom_name --generate-notes --repo $cache_link
+gh release upload --clobber $rom_name $1 --repo $cache_link
+}
+
 get_system () {
-[ ! -e out/target/product/lavender/system.img ] && make systemimage -j16
+[ ! -e out/target/product/lavender/system.img ] && make systemimage -j80
 [ ! -e out/target/product/lavender/system.img ] && tg "System.img buid failed!" && exit 0
-echo "System.img Build Succeed!"
+tg "System.img Build Succeed!"
 echo "- Zipping system"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_system.zip out/target/product/lavender/system.img
-upload *_system.zip
+upload_backup *_system.zip
 }
 
 get_product () {
-[ ! -e out/target/product/lavender/product.img ] && make productimage -j16
+[ ! -e out/target/product/lavender/product.img ] && make productimage -j80
 [ ! -e out/target/product/lavender/product.img ] && tg "Product.img buid failed!" && exit 0
-echo "Product.img Build Succeed!"
+tg "Product.img Build Succeed!"
 echo "- Zipping product"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_product.zip out/target/product/lavender/product.img
-upload *_product.zip
+upload_backup *_product.zip
 }
 
 get_system_ext () {
-[ ! -e out/target/product/lavender/system_ext.img ] && make systemextimage -j16
+[ ! -e out/target/product/lavender/system_ext.img ] && make systemextimage -j80
 [ ! -e out/target/product/lavender/system_ext.img ] && tg "System_ext.img buid failed!" && exit 0
-echo "System_ext.img Build Succeed!"
+tg "System_ext.img Build Succeed!"
 echo "- Zipping system_ext"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_system_ext.zip out/target/product/lavender/system_ext.img
-upload *_system_ext.zip
+upload_backup *_system_ext.zip
 }
 
 get_vendor () {
-[ ! -e out/target/product/lavender/vendor.img ] && make vendorimage -j16
+[ ! -e out/target/product/lavender/vendor.img ] && make vendorimage -j80
 [ ! -e out/target/product/lavender/vendor.img ] && tg "Vendor.img buid failed!" && exit 0
-echo "Vendor.img Build Succeed!"
+tg "Vendor.img Build Succeed!"
 echo "- Zipping vendor"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_vendor.zip out/target/product/lavender/vendor.img
-upload *_vendor.zip
+upload_backup *_vendor.zip
 }
 
 get_odm () {
-[ ! -e out/target/product/lavender/odm.img ] && make odmimage -j16
+[ ! -e out/target/product/lavender/odm.img ] && make odmimage -j8
 [ ! -e out/target/product/lavender/odm.img ] && tg "odm.img buid failed!" && exit 0
-echo "odm.img Build Succeed!"
+tg "odm.img Build Succeed!"
 echo "- Zipping odm"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_odm.zip out/target/product/lavender/odm.img
-upload *_odm.zip
+upload_backup *_odm.zip
 }
 
 get_boot () {
-[ ! -e out/target/product/lavender/boot.img ] && make bootimage -j16
+[ ! -e out/target/product/lavender/boot.img ] && make bootimage -j8
 [ ! -e out/target/product/lavender/boot.img ] && tg "Boot.img buid failed!" && exit 0
-echo "Boot.img Build Succeed!"
+tg "Boot.img Build Succeed!"
 echo "- Zipping boot"
 7za a -tzip ${rom_name}-${branch_name}-${part_id}_boot.zip out/target/product/lavender/boot.img
-upload *_boot.zip
+upload_backup *_boot.zip
+}
+
+get_dtbo () {
+[ ! -e out/target/product/lavender/dtbo.img ] && make dtboimage -j8
+[ ! -e out/target/product/lavender/dtbo.img ] && tg "Dtbo.img buid failed!" && exit 0
+tg "Dtbo.img Build Succeed!"
+echo "- Zipping dtbo"
+7za a -tzip ${rom_name}-${branch_name}-${part_id}_dtbo.zip out/target/product/lavender/dtbo.img
+upload_backup *_dtbo.zip
 }
 
 prepare_images () {
 tg "- Preparing for flashable build!"
-[ ! -e out/target/product/lavender/system.img ] && gh release download -R $upload_link ${rom_name} -p '*_system.zip' && unzip *_system.zip
-[ ! -e out/target/product/lavender/product.img ] && gh release download -R $upload_link ${rom_name} -p '*_product.zip' && unzip *_product.zip
-[ ! -e out/target/product/lavender/system_ext.img ] && gh release download -R $upload_link ${rom_name} -p '*_system_ext.zip' && unzip *_system_ext.zip
-[ ! -e out/target/product/lavender/vendor.img ] && gh release download -R $upload_link ${rom_name} -p '*_vendor.zip' && unzip *_vendor.zip
-[ ! -e out/target/product/lavender/odm.img ] && gh release download -R $upload_link ${rom_name} -p '*_odm.zip' && unzip *_odm.zip
-[ ! -e out/target/product/lavender/boot.img ] && gh release download -R $upload_link ${rom_name} -p '*_boot.zip' && unzip *_boot.zip
-mv out/target/product/lavender/system.img out/target/product/lavender/product.img out/target/product/lavender/system_ext.img out/target/product/lavender/vendor.img out/target/product/lavender/odm.img out/target/product/lavender/boot.img /tmp/ci/nex
+[ ! -e out/target/product/lavender/system.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_system.zip && unzip *_system.zip
+[ ! -e out/target/product/lavender/product.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_product.zip && unzip *_product.zip
+[ ! -e out/target/product/lavender/system_ext.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_system_ext.zip && unzip *_system_ext.zip
+[ ! -e out/target/product/lavender/vendor.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_vendor.zip && unzip *_vendor.zip
+[ ! -e out/target/product/lavender/odm.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_odm.zip && unzip *_odm.zip
+[ ! -e out/target/product/lavender/boot.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_boot.zip && unzip *_boot.zip
+[ ! -e out/target/product/lavender/dtbo.img ] && down $cache_link/releases/download/${rom_name}/${rom_name}-${branch_name}-${part_id}_dtbo.zip && unzip *_dtbo.zip
+mv out/target/product/lavender/system.img out/target/product/lavender/product.img out/target/product/lavender/system_ext.img out/target/product/lavender/vendor.img out/target/product/lavender/odm.img out/target/product/lavender/boot.img out/target/product/lavender/dtbo.img /tmp/ci/nex
 cd /tmp/ci/nex
 echo "- Convert sparse images to raw images"
 simg2img system.img system.img.raw
@@ -139,7 +160,7 @@ prepare_images
 convert_dat
 convert_br
 tg "- Zipping OTA Package"
-zip -r1v VoltageOS-13-Community-lavender-$(date +"%Y%m%d-%H%S").zip *
+zip -r1v DerpFest-13-Community-Tango-lavender-$(date +"%Y%m%d-%H%S").zip *
 mkdir -p /tmp/rom/out/target/product/lavender
 mv *.zip /tmp/rom/out/target/product/lavender
 cd /tmp/rom && ls /tmp/rom/out/target/product/lavender/*.zip
@@ -169,20 +190,23 @@ compile_plox () {
 #get_product
 #get_system_ext
 #get_system
-#get_vendor
+get_vendor
 # fking ksu errors
-#ls out/target/product/lavender/vendor.img || get_vendor
-#get_odm
-#ls out/target/product/lavender/boot.img || get_boot
-#final_zip
-#m productimage
-#m systemextimage
-#m systemimage
-m bacon -j80
+ls out/target/product/lavender/vendor.img || get_vendor
+get_odm
+ls out/target/product/lavender/boot.img || get_boot
+ls out/target/product/lavender/dtbo.img || get_dtbo
+final_zip
+#make productimage -j80
+#make systemextimage -j80
+#make systemimage -j80
+#make vendorimage -j80
+#export NINJA_ARGS="-j10"
+#make derp -j48
 
 # KSU bc -_-
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ] && [ $(cat /tmp/rom/out/error.log | grep -o -e 'KernelSU' -e 'FAILED: ' | head -n 1) ]; then
-m bacon -j16
+make derp -j48
 fi
 # 5min break for quick fix
 login_main
@@ -194,7 +218,7 @@ git -C device/xiaomi/sdm660-common pull -r
 git -C device/xiaomi/lavender pull -r
 git -C hardware/qcom-caf/sdm660/media pull -r
 #repo sync android_bionic
-make bacon -j16
+make derp -j16
 fi
 # another 5m break
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ]; then
@@ -205,6 +229,6 @@ git -C device/xiaomi/sdm660-common pull -r
 git -C device/xiaomi/lavender pull -r
 git -C hardware/qcom-caf/sdm660/media pull -r
 #repo sync android_bionic
-make bacon -j16
+make derp -j16
 fi
 }
