@@ -17,6 +17,21 @@ task:
       greedy: true
     run_script:
 #      - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/4.19 /tmp/kernel -b main
-      - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/kernel_4.14 /tmp/kernel -b wf
-      - cd /tmp/kernel
-      - curl https://gist.githubusercontent.com/reaPeR1010/4b5e27fbcb2d25eebe08e7a5e0d4038a/raw/xxx.sh | bash
+      - git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/kernel_4.14 -b ksu x
+      - cd x
+      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/4b5e27fbcb2d25eebe08e7a5e0d4038a/raw/xxx.sh | bash -s ksu
+
+      # nonksu
+      - cd && git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/kernel_4.14 -b nonksu y
+      - cd y
+      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/4b5e27fbcb2d25eebe08e7a5e0d4038a/raw/xxx.sh | bash -s nonksu
+
+      # susfs
+      - cd && git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/kernel_4.14 -b susfs z
+      - cd z
+      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/4b5e27fbcb2d25eebe08e7a5e0d4038a/raw/xxx.sh | bash -s susfs
+
+      # miui
+      - cd && git clone --depth=1 https://$REAL_REPO_OWNER:$my_og_token@github.com/reaPeR1010/kernel_4.14 -b miui r
+      - cd r
+      - curl -Ls https://gist.githubusercontent.com/reaPeR1010/4b5e27fbcb2d25eebe08e7a5e0d4038a/raw/xxx.sh | bash -s miui-ksu
