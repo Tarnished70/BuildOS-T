@@ -44,6 +44,10 @@ mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_mani
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
+#crdeoid11 fuckers
+curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
+curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
+
 # KT
 #git clone --depth=1 --single-branch https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sm6250 -b main
 # DT
@@ -55,7 +59,7 @@ git clone --depth=1 https://github.com/reaPeR1010/android_device_xiaomi_sm6250-c
 #git clone --depth=1 --single-branch https://github.com/reaPeR1010/android_vendor_xiaomi_sm6250-common vendor/xiaomi/sm6250-common -b lineage-18.1
 
 # common extra dt
-git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_common device/xiaomi/common -b 11
+#git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_common device/xiaomi/common -b 11
 
 # fix conlfict with official dt
 #rm -rf device/xiaomi/*/lineage.dependencies

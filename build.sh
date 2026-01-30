@@ -4,9 +4,10 @@ login_main
 # RBE
 . /tmp/ci/rbe
 #export NINJA_REMOTE_NUM_JOBS=150
-export RBE_CXX_LINKS_EXEC_STRATEGY=local
+#export RBE_CXX_LINKS_EXEC_STRATEGY=local
 #export RBE_METALAVA_EXEC_STRATEGY=local
-#export RBE_LOG_LEVEL=debug
+export RBE_LOG_LEVEL=debug
+export RBE_local_resource_fraction=0.4
 #export USE_CCACHE=0
 env | grep RBE
 lunch lineage_miatoll-userdebug
@@ -26,11 +27,11 @@ export USE_GAPPS=false
 
 compile_plox () {
 
-m bacon -j16
+m bacon -j80
 
 # KSU bc -_-
 if [ -e "/tmp/rom/out/error.log" ] && [ ! -e out/target/product/*/*.zip ] && [ $(cat /tmp/rom/out/error.log | grep -o -e 'KernelSU' -e 'FAILED: ' | head -n 1) ]; then
-m bacon -j16
+m bacon -j80
 fi
 
 # 5min break for quick fix
