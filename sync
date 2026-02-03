@@ -32,7 +32,7 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/CLO-Ext/manifest -b bka --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/AxionAOSP/android.git -b lineage-23.1 --git-lfs -g default,-mips,-darwin,-notdefault
 #git clone https://github.com/ImSpiDy/manifest.git --depth 1 -b vauxite .repo/local_manifests
 
 # Sync source without unnecessary messages, try with -j30 first, if fails, it will try again
@@ -44,15 +44,15 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 # tree
 #git clone --depth=1 https://github.com/ArrowOS/android_external_tinyxml external/tinyxml
 
-git clone --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/msm-4.19  -b scar
+git clone --depth=1 https://github.com/ImSpiDy/sonix_kernel_sdm660 kernel/xiaomi/sdm660  -b scar
 #mv -f kernel/msm-4.19/Androidbp kernel/msm-4.19/Android.bp
 #mv -f kernel/msm-4.19/techpack/audio/Androidbp kernel/msm-4.19/techpack/audio/Android.bp
 
-git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 16-CLO
-git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 16-CLO-Rebase
+git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 16
+git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 16
 
-git clone --depth=1 https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 16-CLO
-git clone --depth=1 https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 16-CLO
+git clone --depth=1 https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 16
+git clone --depth=1 https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 16
 
 git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 
@@ -78,14 +78,14 @@ git clone https://github.com/ImSpiDy/SonixExtra vendor/sonix -b inline
 sed -i 's|QCOM_HARDWARE_VARIANT := msm8998|QCOM_HARDWARE_VARIANT := sdm660|' device/qcom/common/common.mk
 rm -rf hardware/qcom-caf/sdm660
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_audio hardware/qcom-caf/sdm660/audio -b 16-caf-sdm660
-git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 16-clo-sm8150
+git clone --depth=1 https://github.com/wHo-EM-i/hardware_qcom_display hardware/qcom-caf/sdm660/display -b 16-caf-sm8150
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_media hardware/qcom-caf/sdm660/media -b 16-caf-sdm660
 git clone --depth=1 https://github.com/wHo-EM-i/android_hardware_qcom_camera hardware/qcom-caf/sdm660/camera -b 16-caf-sdm660
 
 # neo 
-git clone https://github.com/LineageOS/android_hardware_qcom_audio/ hardware/qcom-caf/msm8953/audio -b lineage-22.2-caf-msm8953
-echo "soong_namespace {
-}" > hardware/qcom-caf/msm8953/audio/Android.bp
+#git clone https://github.com/LineageOS/android_hardware_qcom_audio/ hardware/qcom-caf/msm8953/audio -b lineage-22.2-caf-msm8953
+#echo "soong_namespace {
+#}" > hardware/qcom-caf/msm8953/audio/Android.bp
 
 #git clone --depth=1 https://github.com/pix106/android_hardware_qcom-caf_camera hardware/qcom-caf/sdm660/camera -b sdm660-4.19-11.2.1.r1-lavender
 

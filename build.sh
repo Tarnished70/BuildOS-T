@@ -4,7 +4,8 @@
 . /tmp/ci/rbe
 export RBE_CXX_LINKS_EXEC_STRATEGY=local
 export RBE_METALAVA_EXEC_STRATEGY=local
-lunch lavender-userdebug
+#lunch lavender-userdebug
+axion lavender gms pico
 
 build_gapps=0
 
@@ -134,9 +135,12 @@ compile_plox () {
 #get_system_ext
 #get_product
 #get_system
-get_vendor
+#get_vendor
 #get_odm
-get_boot
+ax_help
+setupPerf
+setupSwap
+#get_boot
 # part2 (choose manual zip or bacon if its not in parts)
 #final_zip
 #m bacon -j16
