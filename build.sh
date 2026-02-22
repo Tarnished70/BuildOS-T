@@ -10,10 +10,14 @@ login_main
 #export RBE_remote_cache="grpcs://nexgang.buildbuddy.io"
 #export RBE_remote_timeout="10m"
 
-#export RBE_CXX_LINKS_EXEC_STRATEGY=local
+#export RBE_CXX_EXEC_STRATEGY=local
+export RBE_local_resource_fraction=1.0
+export RBE_CLANG_TIDY=
+export RBE_CLANG_TIDY_EXEC_STRATEGY=
+#export RBE_use_unified_cas_ops=true
 export RBE_LOG_LEVEL=debug
 export USE_CCACHE=0
-export NINJA_ARGS="-j16"
+#export NINJA_ARGS="-j16"
 env | grep RBE
 
 lunch lineage_lavender-userdebug

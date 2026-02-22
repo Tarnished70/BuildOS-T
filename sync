@@ -32,7 +32,7 @@ login_main # main id
 git config --global credential.helper '!gh auth git-credential'
 
 # Sync source
-repo init --depth=1 --no-repo-verify -u https://github.com/crdroid11/android.git -b 11.0 --git-lfs -g default,-mips,-darwin,-notdefault
+repo init --depth=1 --no-repo-verify -u https://github.com/LineageOS-Revived/android.git -b lineage-18.1 --git-lfs -g default,-mips,-darwin,-notdefault
 
 # local_mnf
 mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_manifests
@@ -41,8 +41,8 @@ mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_mani
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
 #crdeoid11 fuckers
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
 
 # tree
 if [ $K19 == 1 ]; then
@@ -61,8 +61,8 @@ else
 git clone --depth=1 --single-branch https://github.com/ImSpiDy/kernel_xiaomi_lavender-4.4 kernel/xiaomi/sdm660 -b snx-qti
 git -C kernel/xiaomi/sdm660 apply QTI_HAPTICS.p
 fi
-git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 11
-git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 11
+git clone https://github.com/ImSpiDy/device_xiaomi_lavender device/xiaomi/lavender -b 11-4.4
+git clone --depth=1 https://github.com/ImSpiDy/device_xiaomi_sdm660-common device/xiaomi/sdm660-common -b 11-4.4
 
 #git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_lavender vendor/xiaomi/lavender -b 11
 #git clone --depth=1 --single-branch https://github.com/ImSpiDy/vendor_xiaomi_sdm660-common vendor/xiaomi/sdm660-common -b 11
@@ -102,16 +102,16 @@ git clone https://github.com/Nub-XD/vendor_lavender-priv_keys vendor/lineage-pri
 echo "-include vendor/lineage-priv/keys/keys.mk" >> vendor/*/config/common.mk
 
 #patch
-rm -rf device/qcom/sepolicy-legacy-um
-git clone https://github.com/raiyanbinmohsin/device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um
-git -C device/qcom/sepolicy-legacy-um revert -n b63cd988f7e7df3d54a97285f354476760edf7ae
+#rm -rf device/qcom/sepolicy-legacy-um
+#git clone https://github.com/raiyanbinmohsin/device_qcom_sepolicy-legacy-um device/qcom/sepolicy-legacy-um
+#git -C device/qcom/sepolicy-legacy-um revert -n b63cd988f7e7df3d54a97285f354476760edf7ae
 
 # build/soong
 curl https://github.com/wHo-EM-i/build_soong/commit/42df79cee0b1eec108a71affcf3ae841613b9a0c.patch | git -C build/soong am
 #curl https://github.com/wHo-EM-i/build_soong/commit/809cf30f6ee3183d630c40b5eef375fe1fd965a7.patch | git -C build/soong am
 curl https://github.com/wHo-EM-i/build_soong/commit/1f4a7bed507a34ca6e46a5ab5b4017899133cab0.patch | git -C build/soong am
 curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77aec7b2a80d980.patch | git -C build/soong am
-# bionic
+# bionic hax
 #curl https://github.com/crdroidandroid/android_bionic/commit/1bc81a661fac286b709f6c424e260ff863dfad5c.patch | git -C bionic am
 #curl https://github.com/crdroidandroid/android_bionic/commit/35990d0980cacda546da37870d26f19058f2ce17.patch | git -C bionic am
 #curl https://github.com/crdroidandroid/android_bionic/commit/1b0f29cc939cd54b6d05d831e7bdb027df26d48f.patch | git -C bionic am
@@ -126,6 +126,8 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 #curl https://github.com/crdroidandroid/android_bionic/commit/4114593175e1bc96925be734a80551c6c1502379.patch | git -C bionic am
 #curl https://github.com/crdroidandroid/android_bionic/commit/fbacd1563238aa2518971171e4d95cca61326cb8.patch | git -C bionic am
 #curl https://github.com/crdroidandroid/android_bionic/commit/7d66f1fb333114f7e35a2bd33e428d66b70e72ca.patch | git -C bionic am
+git -C bionic fetch https://github.com/wHo-EM-i/bionic -t los18.1
+git -C bionic cherry-pick de249a26de74e8925d4729549dfff694942e6972^..ff3d843bc9f3edacbeb08df065d3e5afe25e065f
 
 # hax
 # fwb
@@ -143,7 +145,7 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 #git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
 
 # Settings (maintainer patch)
-curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
+#curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am
 
 # Clang
 #git clone --depth=1 --single-branch https://gitlab.com/Project-Nexus/nexus-clang.git prebuilts/clang/host/linux-x86/custom-clang -b nexus-14
@@ -154,8 +156,8 @@ curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a
 #tar -xzf clang-*.tar.gz -C /tmp/rom/prebuilts/clang/host/linux-x86/custom-clang && rm -rf clang-*.tar.gz
 
 # qti powerhal
-#rm -rf /tmp/rom/vendor/qcom/opensource/power
-#git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 11.0
+rm -rf /tmp/rom/vendor/qcom/opensource/power
+git clone --depth=1 https://github.com/JunkYard-XD/android_vendor_qcom_opensource_power vendor/qcom/opensource/power -b 11.0
 
 . /tmp/ci/function
 tg "$rom_name source sync completed!
