@@ -11,12 +11,19 @@
   <remove-project path="frameworks/base" />
   <remove-project path="frameworks/native" />
   <remove-project path="vendor/lineage" />
+  <remove-project path="external/skia" />
 
   <!-- Ext additions -->
   <project path="frameworks/base" name="android_frameworks_base" remote="ext" clone-depth="1" />
   <project path="frameworks/native" name="android_frameworks_native" remote="ext" clone-depth="1" />
   <project path="vendor/lineage" name="android_vendor" remote="ext" clone-depth="1" />
-  
+  <project path="external/skia" name="android_external_skia" remote="ext" clone-depth="1" />
+
+  <!--
+  <remove-project path="external/libjpeg-turbo" />
+  <project path="external/libjpeg-turbo" name="LineageOS/android_external_libjpeg-turbo" groups="pdk" revision="lineage-18.1" clone-depth="1" />
+  -->
+  	
   <!-- Tree -->
   <project path="kernel/xiaomi/sm6250" name="kernel_4.14" remote="rtr" revision="cr" clone-depth="1" />
   <project path="vendor/xiaomi/miatoll" name="android_vendor_xiaomi_miatoll" remote="rtr" revision="lineage-18.1" clone-depth="1" />

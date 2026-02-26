@@ -45,8 +45,9 @@ mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_mani
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
 #crdeoid11 fuckers
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
+curl https://github.com/LineageOS/android_external_libjpeg-turbo/commit/0cd36dd9593c659539ccaf318e65d1fa2888a8b9.patch | git -C external/libjpeg-turbo am
 
 # KT
 #git clone --depth=1 --single-branch https://github.com/reaPeR1010/kernel_4.14 kernel/xiaomi/sm6250 -b main
