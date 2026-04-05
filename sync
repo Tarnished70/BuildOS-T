@@ -41,8 +41,8 @@ mkdir -p .repo/local_manifests && cp /tmp/ci/local_manifest.xml .repo/local_mani
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j16 || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j10
 
 #crdeoid11 fuckers
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
-curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/e36db27f4f64b0c77db5af7e05305bdfdc0e0654.patch | git -C packages/services/Mms am
+#curl https://github.com/LineageOS/android_packages_services_Mms/commit/20eadc021d566984b62e9e190e2b84ba6371336a.patch | git -C packages/services/Mms am
 
 # tree
 if [ $K19 == 1 ]; then
@@ -138,9 +138,9 @@ curl https://github.com/wHo-EM-i/build_soong/commit/0a769f9d183a692b9fd56dabd77a
 # BL Lock spoof
 #git -C frameworks/base cherry-pick 07651054fe4bd97922d8ff80e97f2ff85c19115b
 
-#git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
+git -C vendor/lineage fetch https://github.com/JunkYard-XD/android_vendor -t 11.0
 # disable gms spoof overlay
-#git -C vendor/lineage cherry-pick 39726c50c836b535553a5a983a7c9eeadef2bcce
+git -C vendor/lineage cherry-pick 64bee812f46df745dd5098fe6ef36fc73ea23b1c
 
 # Settings (maintainer patch)
 curl https://github.com/JunkYard-XD/android_packages_apps_Settings/commit/01592a8ca348aa94755c910779d8b3b23b45c395.patch | git -C packages/apps/Settings am

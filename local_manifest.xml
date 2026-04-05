@@ -17,6 +17,7 @@
   -->
   <remove-project path="frameworks/base" />
   <remove-project path="frameworks/native" />
+  <remove-project path="external/skia" />
 
   <!-- Ext additions -->
   <!--
@@ -24,6 +25,7 @@
   -->
   <project path="frameworks/base" name="android_frameworks_base" remote="ext" clone-depth="1" />
   <project path="frameworks/native" name="android_frameworks_native" remote="ext" clone-depth="1" />
+  <project path="external/skia" name="android_external_skia" remote="ext" clone-depth="1" />
   
   <!-- Tree -->
   <!--

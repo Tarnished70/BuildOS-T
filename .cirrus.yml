@@ -20,7 +20,8 @@ task:
     name: R
     timeout_in: 120m
     container:
-      dockerfile: nexgang
+#      dockerfile: nexgang
+      image: nexgang/ubuntu:latest
       cpu: 8
       memory: 32G
       stateful: true
